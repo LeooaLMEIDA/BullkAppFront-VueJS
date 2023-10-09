@@ -2,7 +2,7 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Livros" :breadcrumb="true" />
+        <s-title title="Aparelhos" :breadcrumb="true" />
       </div>
     </div>
     <s-input-filter @index="handleIndex" @filter="filterAll" @clear="loadItems" name="filterWorkMeasurement"
@@ -11,30 +11,14 @@
       <div class="row">
         <div class="col-12">
           <s-table v-model="actualPage" :headers="headers" :items="items" :totalPages="pages" v-if="!loader">
-            <template v-slot:name="{ item }">
-              {{ item.name }}
-            </template>
-            <template v-slot:gender="{ item }">
-              {{ item.gender }}
-            </template>
-            <template v-slot:author="{ item }">
-              {{ item.author }}
-            </template>
-            <template v-slot:quantityPages="{ item }">
-              <div class="text-center">
-                {{ item.quantityPages }}
-              </div>
+            <template v-slot:descricao="{ item }">
+              {{ item.descricao }}
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
                 <s-chip :color="getStatusColor(item.status)" :text="translateStatusText(item.status)">
                   {{ item.status }}
                 </s-chip>
-              </div>
-            </template>
-            <template v-slot:dateAcquisition="{ item }">
-              <div class="text-center">
-                {{ $filters.formatDate(item.dateAcquisition) }}
               </div>
             </template>
             <template v-slot:actions="{ item }">

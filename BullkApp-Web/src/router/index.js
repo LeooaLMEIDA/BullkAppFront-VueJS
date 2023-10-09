@@ -29,44 +29,28 @@ const routes = [
     name: 'userUpdate',
     component: () => import('@/views/administracao/usuario/UsuarioNovo.vue')
   },
-  /* ########## LIVRO ########## */
+  /* ########## APARELHO ########## */
   {
-    path: '/cadastros/livro',
-    name: 'book',
-    component: () => import('@/views/cadastros/livro/Livro.vue')
+    path: '/cadastros/aparelho',
+    name: 'aparelho',
+    component: () => import('@/views/cadastros/aparelho/Aparelho.vue')
   },
   {
-    path: '/cadastros/livro/cadastro/novo',
-    name: 'bookNew',
-    component: () => import('@/views/cadastros/livro/LivroNovo.vue')
+    path: '/cadastros/aparelho/cadastro/novo',
+    name: 'aparelhoNew',
+    component: () => import('@/views/cadastros/aparelho/AparelhoNovo.vue')
   },
   {
-    path: '/cadastros/livro/:id/editar',
-    name: 'bookUpdate',
-    component: () => import('@/views/cadastros/livro/LivroNovo.vue')
-  },
-  /* ########## EMPRÉSTIMO ########## */
-  {
-    path: '/cadastros/',
-    name: 'loan',
-    component: () => import('@/views/cadastros/emprestimo/Emprestimo.vue')
-  },
-  {
-    path: '/cadastros/emprestimo/cadastro/novo',
-    name: 'loanNew',
-    component: () => import('@/views/cadastros/emprestimo/EmprestimoNovo.vue')
-  },
-  {
-    path: '/cadastros/emprestimo/:id/editar',
-    name: 'loanUpdate',
-    component: () => import('@/views/cadastros/emprestimo/EmprestimoNovo.vue')
+    path: '/cadastros/aparelho/:id/editar',
+    name: 'aparelhoUpdate',
+    component: () => import('@/views/cadastros/aparelho/AparelhoNovo.vue')
   },
   /* ########## PERFIL ########## */
-  {
-    path: '/meu_perfil',
-    name: 'myProfile',
-    component: () => import('@/views/Perfil.vue')
-  },
+  // {
+  //   path: '/meu_perfil',
+  //   name: 'myProfile',
+  //   component: () => import('@/views/Perfil.vue')
+  // },
 ]
 
 const router = createRouter({

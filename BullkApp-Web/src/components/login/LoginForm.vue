@@ -7,40 +7,18 @@
     </div>
     <div class="row">
       <form ref="form" @submit.prevent="submitForm">
-        <s-input-email
-          ref="un"
-          v-model="object.email"
-          divClass="col-12"
-          label="E-mail"
-          placeholder="E-mail"
-        />
-        <s-input-password
-          ref="pw"
-          v-model="object.password"
-          divClass="col-12"
-          label="Senha"
-          placeholder="Senha"
-          @enter="login"
-        />
+        <s-input-email ref="un" v-model="object.email" divClass="col-12" label="E-mail" placeholder="E-mail" />
+        <s-input-password ref="pw" v-model="object.password" divClass="col-12" label="Senha" placeholder="Senha"
+          @enter="login" />
       </form>
     </div>
     <hr />
     <div class="row">
       <div class="col-12">
-        <s-button
-          label="Entrar"
-          color="light"
-          type="submit"
-          icon="box-arrow-in-right"
-          @click="login()"
-        />
+        <s-button label="Entrar" color="light" type="submit" icon="box-arrow-in-right" @click="login()" />
       </div>
     </div>
-    <s-modal-error
-      ref="modalMessage"
-      modalTitle="Falha ao conectar!"
-      :modalBody="modalBody"
-    />
+    <s-modal-error ref="modalMessage" modalTitle="Falha ao conectar!" :modalBody="modalBody" />
   </div>
 </template>
 
@@ -67,10 +45,10 @@ export default {
       } else {
         const url = `${baseApiUrl}/login`
         axios.defaults.withCredentials = false
-
         await axios
           .post(url, this.object)
           .then(async (res) => {
+            console.log(res)
             const rawUser = await search('usuario',)
             this.$store.dispatch('setLogged', true)
             this.$store.dispatch('setUser', rawUser)
@@ -78,11 +56,11 @@ export default {
             return true
           })
           .catch((err) => {
-            console.log(err)
-            if(err.response.status == 401) {
+            if (err.response.status == 401) {
               this.modalBody = 'Usuário ou senha incorretos. Por favor, verifique.'
               this.modalMessage.show()
             } else if (err.response.status == 400) {
+              //console.log(err)
               this.modalBody = 'Usuário ou senha não informados. Por favor, verifique.'
               this.modalMessage.show()
             } else if (err.response.status == 403) {
