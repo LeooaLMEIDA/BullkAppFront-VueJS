@@ -51,12 +51,8 @@ export default {
   data: () => ({
     route: 'book',
     headers: [
-      { title: 'Nome', field: 'name' },
-      { title: 'Gênero', field: 'gender' },
-      { title: 'Autor', field: 'author' },
-      { title: 'Páginas', field: 'quantityPages' },
+      { title: 'Descrição', field: 'descricao' },
       { title: 'Status', field: 'status' },
-      { title: 'Data Aquisição', field: 'dateAcquisition' },
       { title: 'Ações', field: 'actions' },
     ],
     items: [],
@@ -75,7 +71,7 @@ export default {
       {
         label: 'Nome',
         ref: 'usuarName',
-        route: 'loan',
+        route: 'aparelho',
         subRoute: 'byIdUser',
         param: 'idUser',
         type: 'text',
@@ -132,7 +128,7 @@ export default {
 
     async edit(id) {
       const route = {
-        name: 'loanUpdate',
+        name: 'aparelhoUpdate',
         params: { id: id },
       }
 
@@ -144,7 +140,7 @@ export default {
         await remove(this.route, this.choosed.id)
 
         this.$store.dispatch('setShowToast', true)
-        this.$store.dispatch('setToastMessage', 'Empréstimo excluído com sucesso !')
+        this.$store.dispatch('setToastMessage', 'Aparelho excluído com sucesso !')
         this.loadItems()
       } else {
         this.modalNotLogged.show()
@@ -187,45 +183,8 @@ export default {
           { title: 'Data Aquisição', field: 'dateAcquisition' },
           { title: 'Ações', field: 'actions' },
         ]
-      } else if (this.filterOption == 2) {
-        this.headers = [
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Nome', field: 'name' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
-          { title: 'Ações', field: 'actions' },
-        ]
-      } else if (this.filterOption == 3) {
-        this.headers = [
-          { title: 'Autor', field: 'author' },
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
-          { title: 'Ações', field: 'actions' },
-        ]
-      } else if (this.filterOption == 4) {
-        this.headers = [
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
-          { title: 'Ações', field: 'actions' },
-        ]
-      } else {
-        this.headers = [
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Ações', field: 'actions' },
-        ]
       }
     },
-
     logout() {
       logout(this)
     },
