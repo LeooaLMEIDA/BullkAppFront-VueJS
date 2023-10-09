@@ -8,7 +8,7 @@
     <div class="row">
       <form ref="form" @submit.prevent="submitForm">
         <s-input-email ref="un" v-model="object.email" divClass="col-12" label="E-mail" placeholder="E-mail" />
-        <s-input-password ref="pw" v-model="object.password" divClass="col-12" label="Senha" placeholder="Senha"
+        <s-input-password ref="pw" v-model="object.senha" divClass="col-12" label="Senha" placeholder="Senha"
           @enter="login" />
       </form>
     </div>
@@ -39,7 +39,7 @@ export default {
 
   methods: {
     async login() {
-      if (!this.object.password || !this.object.email) {
+      if (!this.object.senha || !this.object.email) {
         this.modalBody = 'Informe o Usuário e a Senha de acesso.'
         this.modalMessage.show()
       } else {
@@ -49,13 +49,14 @@ export default {
           .post(url, this.object)
           .then(async (res) => {
             console.log(res)
-            const rawUser = await search('usuario',)
+            const rawUser = res.data
             this.$store.dispatch('setLogged', true)
             this.$store.dispatch('setUser', rawUser)
-            this.$router.push({ name: 'dashboard' })
+            this.$router.push({ name: 'home' })
             return true
           })
           .catch((err) => {
+            console.log(err)
             if (err.response.status == 401) {
               this.modalBody = 'Usuário ou senha incorretos. Por favor, verifique.'
               this.modalMessage.show()

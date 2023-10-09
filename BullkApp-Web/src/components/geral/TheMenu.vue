@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg text-bg-dark d-flex justify-content-between" v-if="logged">
+  <nav class="navbar navbar-expand-lg bg-primary d-flex justify-content-between" v-if="logged">
     <div>
       <i class="bi bi-list icon_action ps-3" @click="toggleSidebar"></i>
       <img src="@/assets/Logo4.png" class="ps-3" style="width: 200px;" />
@@ -12,7 +12,7 @@
     </div>
   </nav>
   <div class="wrapper">
-    <nav ref="sidebar" class="sidebar text-bg-dark" v-if="logged">
+    <nav ref="sidebar" class="sidebar bg-primary" v-if="logged">
       <s-sidemenu :menuList="menuList" class="px-3" />
     </nav>
     <div id="content" class="content text-bg-light p-0">

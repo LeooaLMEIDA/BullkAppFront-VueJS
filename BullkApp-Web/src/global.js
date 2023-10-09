@@ -1,1 +1,1 @@
-export const baseApiUrl = 'https://556e-189-113-55-138.ngrok-free.app'
+export const baseApiUrl = 'https://e370-189-113-55-25.ngrok-free.app'
