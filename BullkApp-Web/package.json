@@ -1,12 +1,12 @@
 {
-  "name": "BullkApp",
+  "name": "frontend-hidroleste",
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 8000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "release": "standard-version"
+    "release": "standard-version" 
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",

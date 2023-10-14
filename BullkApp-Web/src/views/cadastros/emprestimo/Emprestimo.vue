@@ -2,7 +2,7 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Aparelhos" :breadcrumb="true" />
+        <s-title title="Empréstimo" :breadcrumb="true" />
       </div>
     </div>
     <s-input-filter @index="handleIndex" @filter="filterAll" @clear="loadItems" name="filterWorkMeasurement"
@@ -11,8 +11,21 @@
       <div class="row">
         <div class="col-12">
           <s-table v-model="actualPage" :headers="headers" :items="items" :totalPages="pages" v-if="!loader">
-            <template v-slot:descricao="{ item }">
-              {{ item.descricao }}
+            <template v-slot:idUser="{ item }">
+              {{ item.userName }}
+            </template>
+            <template v-slot:idBook="{ item }">
+              {{ item.bookName }}
+            </template>
+            <template v-slot:loanStart="{ item }">
+              <div class="text-center">
+                {{ $filters.formatDate(item.loanStart) }}
+              </div>
+            </template>
+            <template v-slot:loanEnd="{ item }">
+              <div class="text-center">
+                {{ $filters.formatDate(item.loanEnd) }}
+              </div>
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
@@ -31,7 +44,7 @@
         </div>
         <div class="col-12" v-if="!loader">
           <s-button type="button" label="Novo" color="primary" icon="plus-lg"
-            @click="this.$router.push({ name: 'aparelhoNew' })" />
+            @click="this.$router.push({ name: 'loanNew' })" />
         </div>
       </div>
       <!-- <TheLoader v-if="loader" /> -->
@@ -40,20 +53,21 @@
     <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
   </div>
 </template>
-
 <script>
-import { logout } from '@/rule/functions.js'
 import { get, remove, update, search } from '@/crud.js'
 
 export default {
-  name: 'aparelho',
+  name: 'Loan',
 
   data: () => ({
-    route: 'aparelho',
+    route: 'loan',
     headers: [
-      { title: 'Descrição', field: 'descricao' },
+      { title: 'Usuário', field: 'idUser' },
+      { title: 'Livro', field: 'idBook' },
+      { title: 'Inicio', field: 'loanStart' },
+      { title: 'Fim', field: 'loanEnd' },
       { title: 'Status', field: 'status' },
-      { title: 'Ações', field: 'actions' },
+
     ],
     items: [],
     object: {},
@@ -69,17 +83,17 @@ export default {
 
     filterObject: [
       {
-        label: 'Nome',
-        ref: 'usuarName',
-        route: 'aparelho',
-        subRoute: 'byIdUser',
-        param: 'idUser',
+        label: 'Usuário',
+        ref: 'bookName',
+        route: 'book',
+        subRoute: 'by-name',
+        param: 'name',
         type: 'text',
         signal: '=',
-        operator: 'LIKE',
+        operator: '',
         index: 1
       },
-      /*{
+      {
         label: 'Gênero',
         ref: 'bookGender',
         route: 'book',
@@ -100,7 +114,7 @@ export default {
         signal: '',
         operator: 'LIKE',
         index: 3
-      },*/
+      },
     ],
 
     filterOption: 1,
@@ -109,31 +123,27 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      /*if (await this.$checkSession()) {
+      if (await this.$checkSession()) {
         const query = { params: { page: page, limit: this.limit } }
         let raw = []
         if (this.filterParam) {
           this.filterParam.params.page = page
           this.filterParam.params.limit = this.limit
+          console.log("CAIU LERNOWS");
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
           raw = await get(this.route, query)
         }
         this.items = raw
-          this.pages = Math.ceil(raw.total / this.limit)
+        //   this.pages = Math.ceil(raw.total / this.limit)
       } else {
-       this.modalNotLogged.show()
-      } */
-
-      let raw = []
-      raw = await get(this.$route.name, {})
-      this.items = raw
-
+        this.modalNotLogged.show()
+      }
     },
 
     async edit(id) {
       const route = {
-        name: 'aparelhoUpdate',
+        name: 'bookUpdate',
         params: { id: id },
       }
 
@@ -145,7 +155,7 @@ export default {
         await remove(this.route, this.choosed.id)
 
         this.$store.dispatch('setShowToast', true)
-        this.$store.dispatch('setToastMessage', 'Aparelho excluído com sucesso !')
+        this.$store.dispatch('setToastMessage', 'Empréstimo excluído com sucesso !')
         this.loadItems()
       } else {
         this.modalNotLogged.show()
@@ -158,11 +168,11 @@ export default {
     },
 
     getStatusColor(status) {
-      return status == 1 ? "bg-success" : "bg-danger";
+      return status == 1 ? "bg-primary" : status == 2 ? "bg-success" : "bg-danger";
     },
 
     translateStatusText(status) {
-      return status == 1 ? "Ativo" : "Inativo";
+      return status == 1 ? "Ativo" : status == 2 ? "Finalizado": "Cancelado";
     },
 
     async filterAll(event) {
@@ -188,8 +198,45 @@ export default {
           { title: 'Data Aquisição', field: 'dateAcquisition' },
           { title: 'Ações', field: 'actions' },
         ]
+      } else if (this.filterOption == 2) {
+        this.headers = [
+          { title: 'Gênero', field: 'gender' },
+          { title: 'Nome', field: 'name' },
+          { title: 'Autor', field: 'author' },
+          { title: 'Páginas', field: 'quantityPages' },
+          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      } else if (this.filterOption == 3) {
+        this.headers = [
+          { title: 'Autor', field: 'author' },
+          { title: 'Nome', field: 'name' },
+          { title: 'Gênero', field: 'gender' },
+          { title: 'Páginas', field: 'quantityPages' },
+          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      } else if (this.filterOption == 4) {
+        this.headers = [
+          { title: 'Páginas', field: 'quantityPages' },
+          { title: 'Nome', field: 'name' },
+          { title: 'Gênero', field: 'gender' },
+          { title: 'Autor', field: 'author' },
+          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      } else {
+        this.headers = [
+          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Nome', field: 'name' },
+          { title: 'Gênero', field: 'gender' },
+          { title: 'Autor', field: 'author' },
+          { title: 'Páginas', field: 'quantityPages' },
+          { title: 'Ações', field: 'actions' },
+        ]
       }
     },
+
     logout() {
       logout(this)
     },
@@ -213,6 +260,6 @@ export default {
     // },
   },
 }
-</script>
 
+</script>
 <style></style>

@@ -3,8 +3,9 @@ const { baseApiUrl } = require('./global')
 
 const get = async (route, params = {}) => {
   let url = `${baseApiUrl}/${route}`
+  console.log(url);
 
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const result = await axios
     .get(url, params)
@@ -16,6 +17,7 @@ const get = async (route, params = {}) => {
       return []
     })
 
+    console.log(result)
   return result
 }
 
@@ -55,9 +57,11 @@ const search = async (route, objectParams) => {
 }
 
 const insert = async (route, object) => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
+  console.log(url);
+  console.log(object)
   const result = await axios
     .post(url, object)
     .then((res) => {

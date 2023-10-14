@@ -56,12 +56,10 @@ export default {
             return true
           })
           .catch((err) => {
-            console.log(err)
             if (err.response.status == 401) {
               this.modalBody = 'Usuário ou senha incorretos. Por favor, verifique.'
               this.modalMessage.show()
             } else if (err.response.status == 400) {
-              //console.log(err)
               this.modalBody = 'Usuário ou senha não informados. Por favor, verifique.'
               this.modalMessage.show()
             } else if (err.response.status == 403) {

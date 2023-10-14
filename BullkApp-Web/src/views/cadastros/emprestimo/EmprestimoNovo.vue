@@ -4,9 +4,31 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="descricao" divClass="col-md-6" label="Descrição" placeholder=""
-            required />
-          <s-select v-model="object.status" divClass="col-md-3" label="Status" :items="statusData" :clearable="false" />
+          <!-- Usuário -->
+          <s-input-zoom v-model="object.idUser" ref="idUser" divClass="col-12 col-md-1 col-xxl-1" label="Usuário">
+            <template #default>
+              <Usuario :zoom="true" @selectedItem="handleSelectedUser" />
+            </template>
+          </s-input-zoom>
+          <s-input-text v-model="nameUser" ref="nameUser" divClass="col-12 col-md-5 col-xxl-5" label="Nome"
+            :isDisabled="true" />
+          <!-- Livro -->
+          <s-input-zoom v-model="object.idBook" ref="idBook" divClass="col-12 col-md-1 col-xxl-1" label="Livro">
+            <template #default>
+              <Livro :zoom="true" @selectedItem="handleSelectedBook" />
+            </template>
+          </s-input-zoom>
+          <s-input-text v-model="nameBook" ref="nameBook" divClass="col-12 col-md-5 col-xxl-5" label="Nome"
+            :isDisabled="true" />
+          <!-- Datas -->
+          <s-input-date v-model="object.loanStart" ref="loanStart" divClass="col-12 col-md-4 col-xxl-4"
+            label="Inicio Empréstimo" />
+          <s-input-date v-model="object.loanEnd" ref="loanEnd" divClass="col-12 col-md-4 col-xxl-4"
+            label="Término Empréstimo" />
+          <s-select v-model="object.status" ref="status" divClass="col-12 col-md-4 col-xxl-4" label="Status"
+            :items="statusData" />
+          <s-input-textarea v-model="object.obs" ref="status" divClass="col-12 col-md-12 col-xxl-12" label="Observação"/>
+          
         </div>
         <div class="row">
           <s-label-required />
@@ -30,13 +52,20 @@
     <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
   </div>
 </template>
-  
 <script>
+
+import Usuario from '@/views/administracao/usuario/Usuario.vue'
+import Livro from '@/views/cadastros/livro/Livro.vue'
 import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
-  name: 'aparelhoNew',
+  name: 'LoanNew',
+
+  components: {
+    Usuario,
+    Livro
+  },
 
   data: () => ({
     object: {},
@@ -46,15 +75,16 @@ export default {
     modalNotLogged: null,
     modalBody: null,
     title: null,
-    route: 'aparelho',
+    route: 'loan',
+    nameUser: null,
+    nameBook: null,
 
     statusData: [
       { label: "Ativo", value: 1 },
-      { label: "Inativo", value: 0 },
+      { label: "Finalizado", value: 2 },
+      { label: "Cancelado", value: 0 },
     ],
-
   }),
-
   methods: {
     async loadItem(id) {
       if (await this.$checkSession()) {
@@ -63,7 +93,8 @@ export default {
             this.object = res
           })
           .catch((err) => {
-            this.$router.push({ name: 'aparelho' })
+            console.error(err)
+            this.$router.push({ name: 'loan' })
           })
       }
 
@@ -89,7 +120,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Aparelho criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Empréstimo criado com sucesso !')
               this.object = {}
             }
           }
@@ -111,8 +142,12 @@ export default {
         if (this.object.id) {
 
           const newObj = {
-            descricao: this.object.descricao,
+            name: this.object.name,
+            gender: this.object.gender,
+            author: this.object.author,
+            quantityPages: this.object.quantityPages,
             status: this.object.status,
+            dateAcquisition: this.object.dateAcquisition,
           }
 
           const result = await update(this.route, this.$route.params.id, newObj)
@@ -125,7 +160,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Aparelho alterado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Empréstimo alterado com sucesso !')
               this.$router.back()
             }
           }
@@ -140,15 +175,14 @@ export default {
           const result = await insert(this.route, this.object)
 
           if (result.status) {
-            console.log(result.status)
-            if (result.status != 204 && result.status != 200) {
+            if (result.status != '204') {
               this.modalBody = result.response.data
               this.modalError.show()
             }
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Aparelho criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Empréstimo criado com sucesso !')
               this.$router.back()
             }
           }
@@ -163,11 +197,23 @@ export default {
       else { this.modalNotLogged.show() }
     },
 
+    handleSelectedUser(item) {
+      this.$refs.idUser.modalZoom.hide()
+      this.object.idUser = item.id.toString()
+      this.nameUser = item.name
+    },
+
+    handleSelectedBook(item) {
+      this.$refs.idBook.modalZoom.hide()
+      this.object.idBook = item.id.toString()
+      this.nameBook = item.name
+    },
+
     logout() { logout(this) }
   },
 
   mounted() {
-    this.$route.name == 'aparelhoUpdate' ? this.title = 'Edição de Aparelho' : this.title = 'Cadastro de Aparelho'
+    this.$route.name == 'loanUpdate' ? this.title = 'Edição de Empréstimo' : this.title = 'Cadastro de Empréstimo'
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
     this.modalError = new this.$Modal(this.$refs.modalError.$refs.modalPattern)
   },
@@ -178,6 +224,6 @@ export default {
     if (id) { await this.loadItem(id) }
   },
 }
+
 </script>
-  
 <style></style>
