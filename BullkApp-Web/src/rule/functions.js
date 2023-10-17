@@ -46,24 +46,24 @@ export function getRouteName(route) {
       UpdateName: 'Edição de Usuário',
       UpdatePath: 'userUpdate',
     },
-    // aparelho: {
-    //   parent: 'Cadastros',
-    //   name: 'Aparelhos',
-    //   path: 'aparelho',
-    //   childrenName: 'Cadastro de Aparelho',
-    //   childrenPath: 'aparelhoNew',
-    //   UpdateName: 'Edição de Aparelho',
-    //   UpdatePath: 'aparelhoUpdate',
-    // },
-    // exercicio : {
-    //   parent: 'Cadastros',
-    //   name: 'Exercícios',
-    //   path: 'exercicio',
-    //   childrenName: 'Cadastro de Exercício',
-    //   childrenPath: 'exercicioNew',
-    //   UpdateName: 'Edição de Exercício',
-    //   UpdatePath: 'exercicioUpdate',
-    // },
+    aparelho: {
+      parent: 'Cadastros',
+      name: 'Aparelhos',
+      path: 'aparelho',
+      childrenName: 'Cadastro de Aparelho',
+      childrenPath: 'aparelhoNew',
+      UpdateName: 'Edição de Aparelho',
+      UpdatePath: 'aparelhoUpdate',
+    },
+    exercicio: {
+      parent: 'Cadastros',
+      name: 'Exercícios',
+      path: 'exercicio',
+      childrenName: 'Cadastro de Exercício',
+      childrenPath: 'exercicioNew',
+      UpdateName: 'Edição de Exercício',
+      UpdatePath: 'exercicioUpdate',
+    },
     myProfile: {
       parent: '',
       name: '',
@@ -128,8 +128,6 @@ export function cleanObject(object) {
 
 export async function checkSession() {
   let rawUser = null
-  console.log('storage', sessionStorage.getItem('userData'));
-
   const storedUserData = sessionStorage.getItem('userData');
 
   if (storedUserData) {

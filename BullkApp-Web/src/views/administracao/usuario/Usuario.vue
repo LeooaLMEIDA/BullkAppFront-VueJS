@@ -143,7 +143,7 @@ export default {
   name: 'User',
 
   data: () => ({
-    route: 'user',
+    route: 'usuario',
     headers: [
       { title: 'Nome', field: 'name' },
       { title: 'E-mail', field: 'email' },
@@ -218,21 +218,25 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      if (await this.$checkSession()) {
-        const query = { params: { page: page, limit: this.limit } }
-        let raw = []
-        if (this.filterParam) {
-          this.filterParam.params.page = page
-          this.filterParam.params.limit = this.limit
-          raw = await search(this.filterParam.route, this.filterParam.params)
-        } else {
-          raw = await get(this.route, query)
-        }
-        this.items = raw
-        this.pages = Math.ceil(raw.total / this.limit)
-      } else {
-        this.modalNotLogged.show()
-      }
+      // if (await this.$checkSession()) {
+      //   const query = { params: { page: page, limit: this.limit } }
+      //   let raw = []
+      //   if (this.filterParam) {
+      //     this.filterParam.params.page = page
+      //     this.filterParam.params.limit = this.limit
+      //     raw = await search(this.filterParam.route, this.filterParam.params)
+      //   } else {
+      //     raw = await get(this.route, query)
+      //   }
+      //   this.items = raw
+      //   this.pages = Math.ceil(raw.total / this.limit)
+      // } else {
+      //   this.modalNotLogged.show()
+      // }
+
+      let raw = []
+      raw = await get(this.$route.name, {})
+      this.items = raw
     },
 
     async submitForm() {
@@ -400,9 +404,9 @@ export default {
       this.loadItems()
       this.changeHeaders()
     },
-    actualPage() {
-      this.loadItems(this.actualPage)
-    },
+    // actualPage() {
+    //   this.loadItems(this.actualPage)
+    // },
   },
 }
 </script>

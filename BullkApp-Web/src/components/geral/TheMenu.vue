@@ -51,10 +51,18 @@ export default {
         icon: 'bi bi-plus-circle-fill',
         children: [
           {
-            code: 'aparelho',
-            title: 'Aparelhos',
-            icon: 'bi bi-circle',
+            code: "aparelho",
+            title: "Aparelhos",
             status: false,
+            icon: "bi bi-circle",
+            children: [],
+          },
+          {
+            code: "exercicio",
+            title: "Exercícios",
+            status: false,
+            icon: "bi bi-circle",
+            children: [],
           },
         ],
       },
