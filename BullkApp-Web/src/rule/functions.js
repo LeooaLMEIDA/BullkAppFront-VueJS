@@ -46,15 +46,24 @@ export function getRouteName(route) {
       UpdateName: 'Edição de Usuário',
       UpdatePath: 'userUpdate',
     },
-    aparelho: {
-      parent: 'Cadastros',
-      name: 'Aparelhos',
-      path: 'aparelho',
-      childrenName: 'Cadastro de Aparelho',
-      childrenPath: 'aparelhoNew',
-      UpdateName: 'Edição de Aparelho',
-      UpdatePath: 'aparelhoUpdate',
-    },
+    // aparelho: {
+    //   parent: 'Cadastros',
+    //   name: 'Aparelhos',
+    //   path: 'aparelho',
+    //   childrenName: 'Cadastro de Aparelho',
+    //   childrenPath: 'aparelhoNew',
+    //   UpdateName: 'Edição de Aparelho',
+    //   UpdatePath: 'aparelhoUpdate',
+    // },
+    // exercicio : {
+    //   parent: 'Cadastros',
+    //   name: 'Exercícios',
+    //   path: 'exercicio',
+    //   childrenName: 'Cadastro de Exercício',
+    //   childrenPath: 'exercicioNew',
+    //   UpdateName: 'Edição de Exercício',
+    //   UpdatePath: 'exercicioUpdate',
+    // },
     myProfile: {
       parent: '',
       name: '',
@@ -93,26 +102,45 @@ export function cleanObject(object) {
   }
 }
 
-let firstTry = false
-import { get } from '@/crud.js'
+// let firstTry = false
+// import { get } from '@/crud.js'
+// export async function checkSession() {
+
+//   let rawUser = null
+
+//   if (!firstTry) {
+//     rawUser = await get('me')
+//     firstTry = true
+//   }
+
+//   else {
+//     const state = JSON.parse(JSON.stringify(store.state))
+//     rawUser = state.user
+//   }
+
+//   if (!rawUser || rawUser == '') { return false }
+//   else {
+//     store.dispatch('setLogged', true)
+//     store.dispatch('setUser', rawUser)
+//     return true
+//   }
+// }
+
 export async function checkSession() {
-
   let rawUser = null
+  console.log('storage', sessionStorage.getItem('userData'));
 
-  if (!firstTry) {
-    rawUser = await get('me')
-    firstTry = true
+  const storedUserData = sessionStorage.getItem('userData');
+
+  if (storedUserData) {
+    rawUser = JSON.parse(storedUserData);
   }
 
-  else {
-    const state = JSON.parse(JSON.stringify(store.state))
-    rawUser = state.user
-  }
-
-  if (!rawUser || rawUser == '') { return false }
-  else {
-    store.dispatch('setLogged', true)
-    store.dispatch('setUser', rawUser)
-    return true
+  if (!rawUser || rawUser === '') {
+    return false;
+  } else {
+    store.dispatch('setLogged', true);
+    store.dispatch('setUser', rawUser);
+    return true;
   }
 }

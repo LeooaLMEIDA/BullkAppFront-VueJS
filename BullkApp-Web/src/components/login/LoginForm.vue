@@ -39,6 +39,8 @@ export default {
 
   methods: {
     async login() {
+      sessionStorage.setItem("chave", "valor");
+
       if (!this.object.senha || !this.object.email) {
         this.modalBody = 'Informe o Usuário e a Senha de acesso.'
         this.modalMessage.show()
@@ -48,8 +50,8 @@ export default {
         await axios
           .post(url, this.object)
           .then(async (res) => {
-            console.log(res)
             const rawUser = res.data
+            sessionStorage.setItem('userData', JSON.stringify(rawUser));
             this.$store.dispatch('setLogged', true)
             this.$store.dispatch('setUser', rawUser)
             this.$router.push({ name: 'home' })

@@ -85,13 +85,20 @@ export default {
         status: false,
         icon: "bi bi-pencil-square",
         children: [
-          {
-            code: "aparelhos",
-            title: "Aparelhos",
-            status: false,
-            icon: "bi bi-circle",
-            children: [],
-          },
+          // {
+          //   code: "aparelhos",
+          //   title: "Aparelhos",
+          //   status: false,
+          //   icon: "bi bi-circle",
+          //   children: [],
+          // },
+          // {
+          //   code: "exercicios",
+          //   title: "Exercícios",
+          //   status: false,
+          //   icon: "bi bi-circle",
+          //   children: [],
+          // },
         ],
       },
       {

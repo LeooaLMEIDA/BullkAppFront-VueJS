@@ -22,6 +22,7 @@ export default {
   },
 
   async beforeMount() {
+    console.log(sessionStorage.getItem("chave"));
     if (!(await this.$checkSession())) {
       this.$router.push({ name: "login" })
     }

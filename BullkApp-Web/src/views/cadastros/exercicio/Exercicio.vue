@@ -2,7 +2,7 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Aparelhos" :breadcrumb="true" />
+        <s-title title="Exercícios" :breadcrumb="true" />
       </div>
     </div>
     <s-input-filter @index="handleIndex" @filter="filterAll" @clear="loadItems" name="filterWorkMeasurement"

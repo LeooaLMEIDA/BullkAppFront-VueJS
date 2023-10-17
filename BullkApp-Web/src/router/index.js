@@ -45,6 +45,22 @@ const routes = [
     name: 'aparelhoUpdate',
     component: () => import('@/views/cadastros/aparelho/AparelhoNovo.vue')
   },
+  /* ########## EXERCÍCIO ########## */
+  {
+    path: '/cadastros/exercicio',
+    name: 'exercicio',
+    component: () => import('@/views/cadastros/exercicio/Exercicio.vue')
+  },
+  {
+    path: '/cadastros/exercicio/cadastro/novo',
+    name: 'exercicioNew',
+    component: () => import('@/views/cadastros/exercicio/ExercicioNovo.vue')
+  },
+  {
+    path: '/cadastros/exercicio/:id/editar',
+    name: 'exercicioUpdate',
+    component: () => import('@/views/cadastros/exercicio/ExercicioNovo.vue')
+  },
   /* ########## PERFIL ########## */
   // {
   //   path: '/meu_perfil',

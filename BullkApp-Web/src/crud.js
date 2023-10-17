@@ -3,7 +3,6 @@ const { baseApiUrl } = require('./global')
 
 const get = async (route, params = {}) => {
   let url = `${baseApiUrl}/${route}`
-  console.log(url);
 
   axios.defaults.withCredentials = false
 
@@ -17,14 +16,13 @@ const get = async (route, params = {}) => {
       return []
     })
 
-    console.log(result)
   return result
 }
 
 const getById = async (route, id) => {
   let url = `${baseApiUrl}/${route}/${id}`
 
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const result = await axios
     .get(url)
@@ -50,7 +48,6 @@ const search = async (route, objectParams) => {
       return res.data
     })
     .catch((err) => {
-      console.error(err)
       return null
     })
   return result
@@ -60,8 +57,6 @@ const insert = async (route, object) => {
   axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
-  console.log(url);
-  console.log(object)
   const result = await axios
     .post(url, object)
     .then((res) => {
@@ -75,12 +70,14 @@ const insert = async (route, object) => {
   return result
 }
 
-const update = async (route, id, object) => {
-  axios.defaults.withCredentials = true
+const update = async (route, object) => {
+  axios.defaults.withCredentials = false
 
-  const url = `${baseApiUrl}/${route}/${id}`
+  const url = `${baseApiUrl}/${route}`
+  console.log(url);
+  // const url = `${baseApiUrl}/${route}/${id}`
   const result = await axios
-    .patch(url, object)
+    .put(url, object)
     .then((res) => {
       return res
     })
@@ -93,7 +90,7 @@ const update = async (route, id, object) => {
 }
 
 const remove = async (route, id) => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   let url = `${baseApiUrl}/${route}/${id}`
   const result = await axios
@@ -105,6 +102,8 @@ const remove = async (route, id) => {
       console.error(err)
       return false
     })
+
+  console.log(result);
 
   return result
 }
