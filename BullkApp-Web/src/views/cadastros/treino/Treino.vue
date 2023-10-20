@@ -2,7 +2,7 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Exercícios" :breadcrumb="true" />
+        <s-title title="Treinos" :breadcrumb="true" />
       </div>
     </div>
     <s-input-filter @index="handleIndex" @filter="filterAll" @clear="loadItems" name="filterWorkMeasurement"
@@ -31,7 +31,7 @@
         </div>
         <div class="col-12" v-if="!loader">
           <s-button type="button" label="Novo" color="primary" icon="plus-lg"
-            @click="this.$router.push({ name: 'exercicioNew' })" />
+            @click="this.$router.push({ name: 'treinoNew' })" />
         </div>
       </div>
       <!-- <TheLoader v-if="loader" /> -->
@@ -46,10 +46,10 @@ import { logout } from '@/rule/functions.js'
 import { get, remove, update, search } from '@/crud.js'
 
 export default {
-  name: 'exercicio',
+  name: 'treino',
 
   data: () => ({
-    route: 'exercicio',
+    route: 'treino',
     headers: [
       { title: 'Descrição', field: 'descricao' },
       { title: 'Status', field: 'status' },
@@ -133,7 +133,7 @@ export default {
 
     async edit(id) {
       const route = {
-        name: 'exercicioUpdate',
+        name: 'treinoUpdate',
         params: { id: id },
       }
 
@@ -145,7 +145,7 @@ export default {
         await remove(this.route, this.choosed.id)
 
         this.$store.dispatch('setShowToast', true)
-        this.$store.dispatch('setToastMessage', 'Exercicio inativado com sucesso !')
+        this.$store.dispatch('setToastMessage', 'Treino inativado com sucesso !')
         this.loadItems()
       } else {
         this.modalNotLogged.show()

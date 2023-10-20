@@ -4,19 +4,15 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-5" label="Descrição"
-            placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
-          <s-select v-model="object.grupoMuscular" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
-            :clearable="false" />
-          <s-input-text v-model="object.idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
-            placeholder="" required />
-          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10"
-            isDisabled label="Descrição Aparelho" placeholder="" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Descrição Aparelho" />
-          <s-input-textarea v-model="object.obs" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
-            label="Orientação" />
-
+          <s-input-text v-model="object.descricao" ref="exercicio" divClass="col-md-2" label="Exercício" placeholder=""
+            required />
+          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-7"
+            isDisabled label="Descrição Exercício" placeholder="" required />
+          <s-select v-model="object.status" divClass="col-md-3" label="Status" :items="statusData" :clearable="false" />
+          <s-input-text v-model="object.descricao" ref="exercicio" divClass="col-md-2" label="Exercício" placeholder=""
+            required />
+          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-7"
+            isDisabled label="Descrição Exercício" placeholder="" required />
         </div>
         <div class="row">
           <s-label-required />
@@ -46,7 +42,7 @@ import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
-  name: 'exercicioNew',
+  name: 'treinoNew',
 
   data: () => ({
     object: {},
@@ -56,27 +52,13 @@ export default {
     modalNotLogged: null,
     modalBody: null,
     title: null,
-    route: 'exercicio',
+    route: 'treino',
 
-    status: [
-      { label: "ATIVO", value: 'true' },
-      { label: "INATIVO", value: 'false' }
+    statusData: [
+      { label: "Ativo", value: 1 },
+      { label: "Inativo", value: 0 },
     ],
 
-    grupoMusculares: [
-      { label: "BICEPS", value: 'BICEPS' },
-      { label: "DELTOIDE", value: 'DELTOIDE' },
-      { label: "DORSAL", value: 'DORSAL' },
-      { label: "GEMEOS", value: 'GEMEOS' },
-      { label: "GLUTEO", value: 'GLUTEO' },
-      { label: "ISQUOTIBIAL", value: 'ISQUOTIBIAL' },
-      { label: "OBLIQUOS", value: 'OBLIQUOS' },
-      { label: "PEITORAL", value: 'PEITORAL' },
-      { label: "QUADRICEPS", value: 'QUADRICEPS' },
-      { label: "RETO ABDOMINAL", value: 'RETO_ABDOMINAL' },
-      { label: "TRAPEZIO", value: 'TRAPEZIO' },
-      { label: "TRICEPS", value: 'TRICEPS' }
-    ],
   }),
 
   methods: {
@@ -87,7 +69,7 @@ export default {
             this.object = res
           })
           .catch((err) => {
-            this.$router.push({ name: 'exercicio' })
+            this.$router.push({ name: 'treino' })
           })
       }
 
@@ -113,7 +95,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
               this.object = {}
             }
           }
@@ -148,7 +130,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício alterado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Treino alterado com sucesso !')
               this.$router.back()
             }
           }
@@ -171,7 +153,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
               this.$router.back()
             }
           }
@@ -190,7 +172,7 @@ export default {
   },
 
   mounted() {
-    this.$route.name == 'exercicioUpdate' ? this.title = 'Edição de Exercício' : this.title = 'Cadastro de Exercício'
+    this.$route.name == 'treinoUpdate' ? this.title = 'Edição de Treino' : this.title = 'Cadastro de Treino'
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
     this.modalError = new this.$Modal(this.$refs.modalError.$refs.modalPattern)
   },

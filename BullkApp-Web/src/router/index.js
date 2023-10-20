@@ -61,6 +61,22 @@ const routes = [
     name: 'exercicioUpdate',
     component: () => import('@/views/cadastros/exercicio/ExercicioNovo.vue')
   },
+  /* ########## TREINO ########## */
+  {
+    path: '/cadastros/treino',
+    name: 'treino',
+    component: () => import('@/views/cadastros/treino/Treino.vue')
+  },
+  {
+    path: '/cadastros/treino/cadastro/novo',
+    name: 'treinoNew',
+    component: () => import('@/views/cadastros/treino/TreinoNovo.vue')
+  },
+  {
+    path: '/cadastros/treino/:id/editar',
+    name: 'treinoUpdate',
+    component: () => import('@/views/cadastros/treino/TreinoNovo.vue')
+  },
   /* ########## PERFIL ########## */
   // {
   //   path: '/meu_perfil',

@@ -4,7 +4,7 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="descricao" divClass="col-md-6" label="Descrição" placeholder=""
+          <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-6" label="Descrição" placeholder=""
             required />
           <s-select v-model="object.status" divClass="col-md-3" label="Status" :items="statusData" :clearable="false" />
         </div>

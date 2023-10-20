@@ -64,6 +64,15 @@ export function getRouteName(route) {
       UpdateName: 'Edição de Exercício',
       UpdatePath: 'exercicioUpdate',
     },
+    treino: {
+      parent: 'Cadastros',
+      name: 'Treinos',
+      path: 'treinos',
+      childrenName: 'Cadastro de Treinos',
+      childrenPath: 'treinosNew',
+      UpdateName: 'Edição de Treino',
+      UpdatePath: 'treinoUpdate',
+    },
     myProfile: {
       parent: '',
       name: '',

@@ -2,15 +2,8 @@
   <div :class="`mb-3 ${divClass}`">
     <s-label :label="label" :required="required" />
     <div class="input-group mb-3">
-      <input
-        ref="file"
-        @change="updateValue"
-        type="file"
-        class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        @blur="updateValue"
-        :multiple="multiple"
-      />
+      <input ref="file" @change="updateValue" type="file" class="form-control" :class="{ 'is-invalid': hasError }"
+        @blur="updateValue" accept=".gif" />
       <div class="invalid-feedback" v-if="hasError">
         {{ error }}
       </div>
@@ -65,7 +58,7 @@ export default defineComponent({
 
   watch: {
     inputValue() {
-      if(this.inputValue) {
+      if (this.inputValue) {
         this.updateValue()
       }
     }

@@ -64,6 +64,13 @@ export default {
             icon: "bi bi-circle",
             children: [],
           },
+          {
+            code: "treino",
+            title: "Treino",
+            status: false,
+            icon: "bi bi-circle",
+            children: [],
+          },
         ],
       },
       {
