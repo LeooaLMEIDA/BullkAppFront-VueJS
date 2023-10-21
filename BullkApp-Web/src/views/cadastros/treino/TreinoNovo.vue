@@ -4,15 +4,23 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="exercicio" divClass="col-md-2" label="Exercício" placeholder=""
+          <s-input-text v-model="idExercicio" ref="exercicio" divClass="col-md-2" label="Exercício" placeholder=""
             required />
-          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-7"
-            isDisabled label="Descrição Exercício" placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-3" label="Status" :items="statusData" :clearable="false" />
-          <s-input-text v-model="object.descricao" ref="exercicio" divClass="col-md-2" label="Exercício" placeholder=""
+          <s-input-text v-model="descricaoExercicio" ref="descricaoExercicio" maxlength="40" divClass="col-md-4"
+            isDisabled label="Descrição Exercício" placeholder="" />
+          <s-input-text v-model="idAluno" ref="aluno" divClass="col-md-2" label="Aluno" placeholder="" required />
+          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
+            label="Nome Aluno" placeholder="" />
+          <s-select v-model="object.status" divClass="col-md-1" label="Treino" :items="treinos" :clearable="false"
             required />
-          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-7"
-            isDisabled label="Descrição Exercício" placeholder="" required />
+          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
+          <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
+            required />
+          <s-input-text v-model="object.adas" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />
+          <s-input-text v-model="object.das" ref="intervalo" divClass="col-md-2" label="Intervalo" placeholder=""
+            required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
+          <s-input-check v-model="object.status" divClass="col-md-2 mt-3" label="Alternativo" />
         </div>
         <div class="row">
           <s-label-required />
@@ -54,10 +62,24 @@ export default {
     title: null,
     route: 'treino',
 
-    statusData: [
-      { label: "Ativo", value: 1 },
-      { label: "Inativo", value: 0 },
+    idExercicio: null,
+    descricaoExercicio: "",
+
+    idAluno:null,
+    nomeAluno:"",
+
+    status: [
+      { label: "Ativo", value: 'true' },
+      { label: "Inativo", value: 'false' },
     ],
+
+    treinos: [
+      { label: "A", value: 'A' },
+      { label: "B", value: 'B' },
+      { label: "C", value: 'C' }
+    ]
+
+
 
   }),
 
@@ -67,6 +89,7 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            console.log(this.object.exercicio)
           })
           .catch((err) => {
             this.$router.push({ name: 'treino' })
@@ -179,7 +202,6 @@ export default {
 
   async created() {
     const id = this.$route.params.id
-
     if (id) { await this.loadItem(id) }
   },
 }

@@ -3,7 +3,7 @@
     <s-label :label="label" :required="required" />
     <div class="input-group mb-3">
       <input ref="file" @change="updateValue" type="file" class="form-control" :class="{ 'is-invalid': hasError }"
-        @blur="updateValue" accept=".gif" />
+        @blur="updateValue" :accept="acceptedTypes" />
       <div class="invalid-feedback" v-if="hasError">
         {{ error }}
       </div>
@@ -26,6 +26,7 @@ export default defineComponent({
     required: Boolean,
     modelValue: File,
     multiple: { type: Boolean, default: false },
+    acceptedTypes: Array
   },
 
   data: () => ({

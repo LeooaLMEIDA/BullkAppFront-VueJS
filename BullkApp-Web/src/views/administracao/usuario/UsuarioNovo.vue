@@ -1,47 +1,25 @@
 <template>
   <div class="m-3">
-    <s-title :title="title" :breadcrumb="true"/>
+    <s-title :title="title" :breadcrumb="true" />
     <div class="card card-body mx-2">
-      <form ref="form" @submit.prevent="submitForm" >
+      <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text
-            v-model="object.name"
-            ref="name"
-            divClass="col-12 col-md-4 col-xxl-4"
-            label="Nome"
-            placeholder="Nome Completo"
-            required
-          />
-          <s-input-email
-            v-model="object.email"
-            ref="email"
-            divClass="col-12 col-md-4 col-xxl-4"
-            label="E-mail"
-            placeholder="email@email.com"
-            required
-          />
-          <s-input-password
-            v-if="!object.id"
-            v-model="object.password"
-            ref="password"
-            divClass="col-12 col-md-3 col-xxl-3"
-            label="Senha"
-            placeholder="••••••••"
-            required
-          />
-          <s-input-check
-            v-model="object.status"
-            ref="status"
-            divClass="col-12 col-md-1 col-xxl-1"
-            divLabel="Status"
-            label="Ativo"
-          />
-          <s-input-textarea 
-            v-model="object.obs"
-            ref="obs"
-            divClass="col-12 col-md-12 col-xxl-12"
-            label="Observação"
-          />
+          <s-input-text v-model="object.name" ref="name" divClass="col-12 col-md-4 col-xxl-4" label="Nome"
+            placeholder="Nome Completo" required />
+          <s-input-email v-model="object.email" ref="email" divClass="col-12 col-md-4 col-xxl-4" label="E-mail"
+            placeholder="email@email.com" required />
+          <s-input-password v-if="!object.id" v-model="object.password" ref="password" divClass="col-12 col-md-2"
+            label="Senha" placeholder="••••••••" required />
+          <s-select v-model="object.sexo" divClass="col-md-2" label="Sexo" :items="sexos" :clearable="false" required />
+          <s-input-date v-model="object.dtNascimento" divClass="col-md-2" label="Nascimento" required />
+          <s-input-text v-model="object.celular" ref="celular" divClass="col-12 col-md-4" label="Celular"
+            placeholder="Celular" v-mask="'(##) #####-####'" required />
+          <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
+            required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
+          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem"
+            :acceptedTypes="['.png', '.jpeg']" />
+
         </div>
         <div class="row">
           <s-label-required />
@@ -50,43 +28,19 @@
         <div class="row">
           <div class="col-12 d-flex justify-content-between">
             <div>
-              <s-button
-                type="submit"
-                label="Salvar"
-                color="primary"
-                icon="check2"
-              />
-              <s-button
-                type="button"
-                label="Salvar e Continuar"
-                color="secondary"
-                icon="check2"
-                v-if="!object.id"
-                @click="saveAndKeep"
-              />
+              <s-button type="submit" label="Salvar" color="primary" icon="check2" />
+              <s-button type="button" label="Salvar e Continuar" color="secondary" icon="check2" v-if="!object.id"
+                @click="saveAndKeep" />
             </div>
             <div>
-              <s-button
-                type="button"
-                label="Cancelar"
-                color="outline-danger"
-                icon="x-lg"
-                @click="$router.back"
-              />
+              <s-button type="button" label="Cancelar" color="outline-danger" icon="x-lg" @click="$router.back" />
             </div>
           </div>
         </div>
       </form>
     </div>
-    <s-modal-error
-      ref="modalError"
-      modalTitle="Falha ao adicionar o registro !"
-      :modalBody="modalBody"
-    />
-    <s-modal-notlogged
-      ref="modalNotLogged"
-      @confirm="logout"
-    />
+    <s-modal-error ref="modalError" modalTitle="Falha ao adicionar o registro !" :modalBody="modalBody" />
+    <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
   </div>
 </template>
 
@@ -114,26 +68,39 @@ export default {
       { 'name': 'Grupo 01' },
       { 'name': 'Grupo 01' },
     ],
+    sexos: [
+      { label: "Masculino", value: 'MASCULINO' },
+      { label: "Feminino", value: 'FEMININO' }
+    ],
+    tipo: [
+      { label: "Admin", value: 'ADMIN' },
+      { label: "Aluno", value: 'ALUNO' }
+    ],
+    status: [
+      { label: "Ativo", value: 'true' },
+      { label: "Inativo", value: 'false' },
+    ],
+
   }),
 
   methods: {
     async loadItem(id) {
       if (await this.$checkSession()) {
         await getById(this.route, id)
-        .then((res) => {
-          this.object = res
-          if (this.object.status == 1) {
-            this.object.status = true
-          }
+          .then((res) => {
+            this.object = res
+            if (this.object.status == 1) {
+              this.object.status = true
+            }
 
-          else {
-            this.object.status = false
-          }
-        })
-        .catch((err) => {
-          console.error(err)
-          this.$router.push({ name: 'user'})
-        })
+            else {
+              this.object.status = false
+            }
+          })
+          .catch((err) => {
+            console.error(err)
+            this.$router.push({ name: 'user' })
+          })
       }
 
       else { this.modalMessage.show() }
@@ -146,7 +113,7 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
+          this.object.status ? this.object.status = 1 : this.object.status = 0
 
           const result = await insert(this.route, this.object)
 
@@ -170,7 +137,7 @@ export default {
         }
       }
 
-      else { this.modalNotLogged.show()}
+      else { this.modalNotLogged.show() }
     },
 
     async save() {

@@ -13,7 +13,7 @@
             placeholder="" required />
           <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10"
             isDisabled label="Descrição Aparelho" placeholder="" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Descrição Aparelho" />
+          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem" acceptedTypes=".gif" />
           <s-input-textarea v-model="object.obs" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
             label="Orientação" />
 
