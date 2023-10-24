@@ -4,21 +4,15 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.name" ref="name" divClass="col-12 col-md-4 col-xxl-4" label="Nome"
-            placeholder="Nome Completo" required />
-          <s-input-email v-model="object.email" ref="email" divClass="col-12 col-md-4 col-xxl-4" label="E-mail"
-            placeholder="email@email.com" required />
-          <s-input-password v-if="!object.id" v-model="object.password" ref="password" divClass="col-12 col-md-2"
-            label="Senha" placeholder="••••••••" required />
-          <s-select v-model="object.sexo" divClass="col-md-2" label="Sexo" :items="sexos" :clearable="false" required />
-          <s-input-date v-model="object.dtNascimento" divClass="col-md-2" label="Nascimento" required />
-          <s-input-text v-model="object.celular" ref="celular" divClass="col-12 col-md-2" label="Celular"
-            placeholder="Celular" v-mask="'(##) #####-####'" required />
-          <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
+          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-6" label="Descrição"
             required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem"
-            :acceptedTypes="['.png', '.jpeg']" />
+          <s-input-text v-model="object.idAluno" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno"
+            placeholder="" required />
+          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
+            label="Nome Aluno" placeholder="" />
+          <s-input-textarea v-model="object.descricao" ref="descricao" divClass="col-md-12" label="Observação"
+            placeholder="" />
+          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem" :acceptedTypes="['.pdf']" />
         </div>
         <div class="row">
           <s-label-required />
@@ -42,13 +36,13 @@
     <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
   </div>
 </template>
-
+  
 <script>
 import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
-  name: 'UserNew',
+  name: 'avaliacoesNew',
 
   data: () => ({
     object: {},
@@ -58,27 +52,15 @@ export default {
     modalNotLogged: null,
     modalBody: null,
     title: null,
-    route: 'user',
-    headersGroup: ['Grupo', 'Ações'],
-    itemsGroup: [
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
+    route: 'avaliacao',
+
+    statusData: [
+      { label: "Ativo", value: 1 },
+      { label: "Inativo", value: 0 },
     ],
-    sexos: [
-      { label: "Masculino", value: 'MASCULINO' },
-      { label: "Feminino", value: 'FEMININO' }
-    ],
-    tipo: [
-      { label: "Admin", value: 'ADMIN' },
-      { label: "Aluno", value: 'ALUNO' }
-    ],
-    status: [
-      { label: "Ativo", value: 'true' },
-      { label: "Inativo", value: 'false' },
-    ],
+
+    idAluno: null,
+    nomeAluno: "",
 
   }),
 
@@ -88,17 +70,9 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
-            if (this.object.status == 1) {
-              this.object.status = true
-            }
-
-            else {
-              this.object.status = false
-            }
           })
           .catch((err) => {
-            console.error(err)
-            this.$router.push({ name: 'user' })
+            this.$router.push({ name: 'avaliacao' })
           })
       }
 
@@ -124,7 +98,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.object = {}
             }
           }
@@ -135,7 +109,6 @@ export default {
           }
         }
       }
-
       else { this.modalNotLogged.show() }
     },
 
@@ -144,11 +117,10 @@ export default {
         this.object.status ? this.object.status = 1 : this.object.status = 0
 
         if (this.object.id) {
-
           const newObj = {
-            name: this.object.name,
-            email: this.object.email,
-            status: this.object.status
+            id: this.object.id,
+            descricao: this.object.descricao,
+            status: this.object.status,
           }
 
           const result = await update(this.route, this.$route.params.id, newObj)
@@ -161,7 +133,7 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Usuário alterado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
               this.$router.back()
             }
           }
@@ -176,14 +148,15 @@ export default {
           const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status != '204') {
+            console.log(result.status)
+            if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
             }
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.$router.back()
             }
           }
@@ -202,7 +175,7 @@ export default {
   },
 
   mounted() {
-    this.$route.name == 'userUpdate' ? this.title = 'Edição de Usuário' : this.title = 'Cadastro de Usuário'
+    this.$route.name == 'avaliacaoUpdate' ? this.title = 'Edição de Avaliação' : this.title = 'Cadastro de Avaliação'
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
     this.modalError = new this.$Modal(this.$refs.modalError.$refs.modalPattern)
   },
@@ -214,5 +187,5 @@ export default {
   },
 }
 </script>
-
+  
 <style></style>

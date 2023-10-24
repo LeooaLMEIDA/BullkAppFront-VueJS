@@ -65,8 +65,8 @@ export default {
     idExercicio: null,
     descricaoExercicio: "",
 
-    idAluno:null,
-    nomeAluno:"",
+    idAluno: null,
+    nomeAluno: "",
 
     status: [
       { label: "Ativo", value: 'true' },

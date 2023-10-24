@@ -2,7 +2,7 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Treinos" :breadcrumb="true" />
+        <s-title title="Avaliação" :breadcrumb="true" />
       </div>
     </div>
     <s-input-filter @index="handleIndex" @filter="filterAll" @clear="loadItems" name="filterWorkMeasurement"
@@ -11,33 +11,14 @@
       <div class="row">
         <div class="col-12">
           <s-table v-model="actualPage" :headers="headers" :items="items" :totalPages="pages" v-if="!loader">
-            <template v-slot:treino="{ item }">
-              {{ item.cdTreino }}
+            <template v-slot:descricao="{ item }">
+              {{ item.descricao }}
             </template>
-            <template v-slot:exercicio="{ item }">
-              {{ item.exercicio.descricao }}
+            <template v-slot:observacao="{ item }">
+              {{ item.observacao }}
             </template>
             <template v-slot:aluno="{ item }">
-              {{ item.usuario.nome }}
-            </template>
-            <template v-slot:series="{ item }">
-              {{ item.series }}
-            </template>
-            <template v-slot:repeticoes="{ item }">
-              {{ item.repeticoes }}
-            </template>
-            <template v-slot:descanso="{ item }">
-              {{ item.descanso }}
-            </template>
-            <template v-slot:peso="{ item }">
-              {{ item.peso }}
-            </template>
-            <template v-slot:status="{ item }">
-              <div class="text-center">
-                <s-chip :color="getStatusColor(item.status)" :text="translateStatusText(item.status)">
-                  {{ item.status }}
-                </s-chip>
-              </div>
+              {{ item.observacao }}
             </template>
             <template v-slot:actions="{ item }">
               <div class="text-center">
@@ -49,7 +30,7 @@
         </div>
         <div class="col-12" v-if="!loader">
           <s-button type="button" label="Novo" color="primary" icon="plus-lg"
-            @click="this.$router.push({ name: 'treinoNew' })" />
+            @click="this.$router.push({ name: 'avaliacaoNew' })" />
         </div>
       </div>
       <!-- <TheLoader v-if="loader" /> -->
@@ -64,20 +45,14 @@ import { logout } from '@/rule/functions.js'
 import { get, remove, update, search } from '@/crud.js'
 
 export default {
-  name: 'treino',
+  name: 'avaliacao',
 
   data: () => ({
-    route: 'treino',
+    route: 'avaliacao',
     headers: [
-      { title: 'Exercício', field: 'exercicio' },
-      { title: 'Aluno', field: 'aluno' },
-      { title: 'Treino', field: 'treino' },
-      { title: 'Séries', field: 'series' },
-      { title: 'Repetições', field: 'repeticoes' },
-      { title: 'Intervalo/Descanso', field: 'descanso' },
-      { title: 'Peso', field: 'peso' },
-      { title: 'Status', field: 'status' },
-      { title: 'Ações', field: 'actions' },
+      { title: 'Descrição', field: 'descricao' },
+      { title: 'Observação', field: 'observacao' },
+      { title: 'Ações', field: 'actions' }
     ],
     items: [],
     object: {},
@@ -91,41 +66,41 @@ export default {
     actualPage: 1,
     limit: 10,
 
-    // filterObject: [
-    //   {
-    //     label: 'Nome',
-    //     ref: 'usuarName',
-    //     route: 'aparelho',
-    //     subRoute: 'byIdUser',
-    //     param: 'idUser',
-    //     type: 'text',
-    //     signal: '=',
-    //     operator: 'LIKE',
-    //     index: 1
-    //   },
-    //   /*{
-    //     label: 'Gênero',
-    //     ref: 'bookGender',
-    //     route: 'book',
-    //     subRoute: 'by-gender',
-    //     param: 'gender',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 2
-    //   },
-    //   {
-    //     label: 'Autor',
-    //     ref: 'bookAuthor',
-    //     route: 'book',
-    //     subRoute: 'by-author',
-    //     param: 'author',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 3
-    //   },*/
-    // ],
+    filterObject: [
+      /*{
+        label: 'Nome',
+        ref: 'usuarName',
+        route: 'aparelho',
+        subRoute: 'byIdUser',
+        param: 'idUser',
+        type: 'text',
+        signal: '=',
+        operator: 'LIKE',
+        index: 1
+      },
+      {
+        label: 'Gênero',
+        ref: 'bookGender',
+        route: 'book',
+        subRoute: 'by-gender',
+        param: 'gender',
+        type: 'text',
+        signal: '',
+        operator: 'LIKE',
+        index: 2
+      },
+      {
+        label: 'Autor',
+        ref: 'bookAuthor',
+        route: 'book',
+        subRoute: 'by-author',
+        param: 'author',
+        type: 'text',
+        signal: '',
+        operator: 'LIKE',
+        index: 3
+      },*/
+    ],
 
     filterOption: 1,
     filterParam: null,
@@ -157,7 +132,7 @@ export default {
 
     async edit(id) {
       const route = {
-        name: 'treinoUpdate',
+        name: 'avaliacaoUpdate',
         params: { id: id },
       }
 
@@ -169,7 +144,7 @@ export default {
         await remove(this.route, this.choosed.id)
 
         this.$store.dispatch('setShowToast', true)
-        this.$store.dispatch('setToastMessage', 'Treino inativado com sucesso !')
+        this.$store.dispatch('setToastMessage', 'Avaliação excluída com sucesso !')
         this.loadItems()
       } else {
         this.modalNotLogged.show()

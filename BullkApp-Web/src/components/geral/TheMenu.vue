@@ -71,6 +71,13 @@ export default {
             icon: "bi bi-circle",
             children: [],
           },
+          {
+            code: "avaliacao",
+            title: "Avaliação",
+            status: false,
+            icon: "bi bi-circle",
+            children: [],
+          },
         ],
       },
       {

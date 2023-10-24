@@ -45,7 +45,7 @@ export default {
         this.modalBody = 'Informe o Usuário e a Senha de acesso.'
         this.modalMessage.show()
       } else {
-        const url = `${baseApiUrl}/login`
+        const url = `${baseApiUrl}/login/web`
         axios.defaults.withCredentials = false
         await axios
           .post(url, this.object)

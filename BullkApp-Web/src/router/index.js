@@ -77,6 +77,23 @@ const routes = [
     name: 'treinoUpdate',
     component: () => import('@/views/cadastros/treino/TreinoNovo.vue')
   },
+  
+  /* ########## AVALIAÇÃO ########## */
+  {
+    path: '/cadastros/avaliacao',
+    name: 'avaliacao',
+    component: () => import('@/views/cadastros/avaliacao/Avaliacao.vue')
+  },
+  {
+    path: '/cadastros/avaliacao/cadastro/novo',
+    name: 'avaliacaoNew',
+    component: () => import('@/views/cadastros/avaliacao/AvaliacaoNovo.vue')
+  },
+  {
+    path: '/cadastros/avaliacao/:id/editar',
+    name: 'avaliacaoUpdate',
+    component: () => import('@/views/cadastros/avaliacao/AvaliacaoNovo.vue')
+  },
   /* ########## PERFIL ########## */
   // {
   //   path: '/meu_perfil',

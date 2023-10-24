@@ -14,6 +14,12 @@
             <template v-slot:descricao="{ item }">
               {{ item.descricao }}
             </template>
+            <template v-slot:grpMusculos="{ item }">
+              {{ item.grpMusculos }}
+            </template>
+            <template v-slot:aparelho="{ item }">
+              {{ item.aparelho.descricao }}
+            </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
                 <s-chip :color="getStatusColor(item.status)" :text="translateStatusText(item.status)">
@@ -52,6 +58,8 @@ export default {
     route: 'exercicio',
     headers: [
       { title: 'Descrição', field: 'descricao' },
+      { title: 'Grupo Musculos', field: 'grpMusculos' },
+      { title: 'Aparelho', field: 'aparelho' },
       { title: 'Status', field: 'status' },
       { title: 'Ações', field: 'actions' },
     ],
@@ -127,6 +135,7 @@ export default {
 
       let raw = []
       raw = await get(this.$route.name, {})
+      console.log(raw);
       this.items = raw
 
     },

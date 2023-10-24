@@ -73,6 +73,15 @@ export function getRouteName(route) {
       UpdateName: 'Edição de Treino',
       UpdatePath: 'treinoUpdate',
     },
+    avaliacao: {
+      parent: 'Cadastros',
+      name: 'Avalições',
+      path: 'avaliacoes',
+      childrenName: 'Cadastro de Avaliações',
+      childrenPath: 'avaliacoesNew',
+      UpdateName: 'Edição de Avaliação',
+      UpdatePath: 'avaliacaoUpdate',
+    },
     myProfile: {
       parent: '',
       name: '',
