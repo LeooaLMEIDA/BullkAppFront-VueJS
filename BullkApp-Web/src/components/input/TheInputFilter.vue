@@ -5,15 +5,8 @@
         <h5>Filtro:</h5>
       </div>
       <div class="col-8">
-        <s-input-radio
-          v-for="filter in filters"
-          :key="filter.value"
-          :name="name"
-          :value="filter.index"
-          :label="filter.label"
-          v-model="option"
-          :inputId="filter.label"
-        />
+        <s-input-radio v-for="filter in filters" :key="filter.value" :name="name" :value="filter.index"
+          :label="filter.label" v-model="option" :inputId="filter.label" />
       </div>
       <div class="col-2 text-end">
         <span class="small text-primary">
@@ -28,26 +21,12 @@
     <s-transition>
       <div class="row align-items-center" v-if="filterToggle">
         <div class="col-xs-9 col-sm-9 col-md-9 col-xxl-9">
-          <s-input-text
-            v-if="object.type == 'text'"
-            v-model="inputValue"
-            :ref="object.ref"
-            :label="object.label"
-            @enter="filterAll"
-          />
-          <s-select
-            v-else-if="object.type == 'select'"
-            :items="object.items"
-            v-model="inputValue"
-            :ref="object.ref"
-            :label="object.label"
-          />
-          <s-input-daterange
-            v-else-if="object.type == 'range'"
-            v-model="inputValue"
-            :ref="object.ref"
-            :label="object.label"
-          />
+          <s-input-text v-if="object.type == 'text'" v-model="inputValue" :ref="object.ref" :label="object.label"
+            @enter="filterAll" />
+          <s-select v-else-if="object.type == 'select'" :items="object.items" v-model="inputValue" :ref="object.ref"
+            :label="object.label" />
+          <s-input-daterange v-else-if="object.type == 'range'" v-model="inputValue" :ref="object.ref"
+            :label="object.label" />
           <s-input-date v-else v-model="inputValue" :ref="object.ref" :label="object.label" />
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3 col-xxl-3 mt-2 text-end">
@@ -136,13 +115,13 @@ export default defineComponent({
         }
 
         if (this.inputValue != '' || this.inputValue != null) {
-          params.column = this.object.param
-          params.operator = this.object.operator
-          params.signal = this.object.signal
-          params.value = this.inputValue
-          
+          //params.column = this.object.param
+          //params.operator = this.object.operator
+          //params.signal = this.object.signal
+          //params.value = this.inputValue
+
           const filterObject = {
-            route: `${this.object.route}/search/${subRoute}`,
+            route: `${this.object.route}/${subRoute}`,
             params,
           }
           this.$emit('filter', filterObject)

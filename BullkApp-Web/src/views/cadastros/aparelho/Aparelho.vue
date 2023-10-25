@@ -72,15 +72,15 @@ export default {
         label: 'Nome',
         ref: 'usuarName',
         route: 'aparelho',
-        subRoute: 'byIdUser',
-        param: 'idUser',
+        subRoute: 'pages/filter',
+        param: 'descricao',
         type: 'text',
-        signal: '=',
-        operator: 'LIKE',
+        signal: '',
+        operator: '',
         index: 1
       },
       /*{
-        label: 'Gênero',
+        label: 'Gênero',b
         ref: 'bookGender',
         route: 'book',
         subRoute: 'by-gender',
@@ -109,7 +109,7 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      /*if (await this.$checkSession()) {
+      if (await this.$checkSession()) {
         const query = { params: { page: page, limit: this.limit } }
         let raw = []
         if (this.filterParam) {
@@ -118,12 +118,13 @@ export default {
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
           raw = await get(this.route, query)
+          console.log("ELSE", raw)
         }
-        this.items = raw
-          this.pages = Math.ceil(raw.total / this.limit)
+        this.items = raw.data
+        //this.pages = Math.ceil(raw.total / this.limit)
       } else {
-       this.modalNotLogged.show()
-      } */
+        this.modalNotLogged.show()
+      }
 
       let raw = []
       raw = await get(this.$route.name, {})
