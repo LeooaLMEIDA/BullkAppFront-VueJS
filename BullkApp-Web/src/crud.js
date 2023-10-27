@@ -75,7 +75,8 @@ const update = async (route, object) => {
 
   const url = `${baseApiUrl}/${route}`
   console.log(url);
-  // const url = `${baseApiUrl}/${route}/${id}`
+  console.log("OBJECT", object);
+
   const result = await axios
     .put(url, object)
     .then((res) => {

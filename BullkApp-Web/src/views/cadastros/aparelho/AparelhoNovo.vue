@@ -4,8 +4,8 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-6" label="Descrição" placeholder=""
-            required />
+          <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-6" label="Descrição"
+            placeholder="" required />
           <s-select v-model="object.status" divClass="col-md-3" label="Status" :items="statusData" :clearable="false" />
         </div>
         <div class="row">
@@ -49,8 +49,8 @@ export default {
     route: 'aparelho',
 
     statusData: [
-      { label: "Ativo", value: 1 },
-      { label: "Inativo", value: 0 },
+      { label: "Ativo", value: 'true' },
+      { label: "Inativo", value: 'false' },
     ],
 
   }),
@@ -77,7 +77,7 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = 1 : this.object.status = 0
+          this.object.status ? this.object.status = true : this.object.status = false
 
           const result = await insert(this.route, this.object)
 
@@ -105,7 +105,7 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
+        this.object.status ? this.object.status = true : this.object.status = false
 
         if (this.object.id) {
           const newObj = {
@@ -114,11 +114,13 @@ export default {
             status: this.object.status,
           }
 
-          const result = await update(this.route, this.$route.params.id, newObj)
+          const result = await update(this.route, newObj)
+
+          console.log("RESULT", result)
 
           if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
+            if (result.status != '204' || result.status != '200') {
+              this.modalBody = result.response
               this.modalError.show()
             }
 
