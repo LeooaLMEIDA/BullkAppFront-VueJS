@@ -10,12 +10,8 @@
       </thead>
       <tbody v-if="items">
         <tr v-for="(item, index) in items" :key="index">
-          <td
-            v-for="header in headers"
-            :key="header"
-            :class="header.align"
-            :style="header.width ? `width: ${header.width};` : ''"
-          >
+          <td v-for="header in headers" :key="header" :class="header.align"
+            :style="header.width ? `width: ${header.width};` : ''">
             <slot :name="header.field" :item="item">{{ item[header.field] }}</slot>
           </td>
         </tr>
@@ -23,21 +19,28 @@
     </table>
     <h5 class="text-secondary text-center mt-3" v-if="!items">Nenhum item a ser exibido.</h5>
     <nav v-if="items">
-      <ul class="pagination pagination-sm justify-content-center">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" aria-label="Anterior" @click.prevent="previousPage">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item" :class="{ active: true }">
-          <a class="page-link" href="#">{{ currentPage }}</a>
-        </li>
-        <li class="page-item" :class="{ disabled: items.length < 0 }">
-          <a class="page-link" href="#" aria-label="Proxima" @click.prevent="nextPage">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
+      <div class="row">
+        <div class="col-6 d-flex justify-content-end">
+          <ul class="pagination pagination-sm">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <a class="page-link" href="#" aria-label="Anterior" @click.prevent="previousPage">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item" :class="{ active: true }">
+              <a class="page-link" href="#">{{ currentPage }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: items.length < 10 || items.length == 0 }">
+              <a class="page-link" href="#" aria-label="Proxima" @click.prevent="nextPage">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+          <span class="ml-auto">{{ `Total de Páginas: ${totalPages}` }}</span>
+        </div>
+      </div>
     </nav>
   </div>
 </template>
@@ -51,7 +54,8 @@ export default {
     items: Array,
     path: String,
     itemsPerPage: { type: String, default: '20' },
-    totalPages: Number,
+    totalPages: { type: Number, default: 1 },
+    realTotalPages: Number
   },
 
   data: () => ({

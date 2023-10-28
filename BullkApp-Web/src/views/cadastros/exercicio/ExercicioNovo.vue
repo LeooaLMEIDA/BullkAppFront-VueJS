@@ -7,14 +7,14 @@
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-5" label="Descrição"
             placeholder="" required />
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
-          <s-select v-model="object.grupoMuscular" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
+          <s-select v-model="object.grpMusculos" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
             :clearable="false" />
           <s-input-text v-model="object.idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
             placeholder="" required />
-          <s-input-text v-model="object.descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10"
+          <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10"
             isDisabled label="Descrição Aparelho" placeholder="" />
           <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem" acceptedTypes=".gif" />
-          <s-input-textarea v-model="object.obs" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
+          <s-input-textarea v-model="object.orientacao" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
             label="Orientação" />
 
         </div>
@@ -57,6 +57,7 @@ export default {
     modalBody: null,
     title: null,
     route: 'exercicio',
+    descricaoAparelho:null,
 
     status: [
       { label: "ATIVO", value: 'true' },
@@ -160,6 +161,19 @@ export default {
         }
 
         else {
+          const newObj = { ...this.object }
+          const aparelho = {
+            id: newObj.idAparelho
+          }
+
+          delete newObj.idAparelho
+          delete newObj.img
+
+          newObj.aparelho = aparelho
+
+          console.log(newObj)
+
+          console.log('objeto', this.object);
           const result = await insert(this.route, this.object)
 
           if (result.status) {

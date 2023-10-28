@@ -115,15 +115,14 @@ export default {
         if (this.filterParam) {
           this.filterParam.params.page = page
           this.filterParam.params.limit = this.limit
-          console.log(this.filterParam.params);
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          console.log("ELSE")
           raw = await get('aparelho/pages', query)
         }
         this.items = raw.data
-        console.log(this.items)
         this.pages = Math.ceil(raw.total / this.limit)
+
+        console.log("PAGES", this.pages);
       } else {
         this.modalNotLogged.show()
       }
@@ -206,9 +205,9 @@ export default {
       this.loadItems()
       this.changeHeaders()
     },
-    // actualPage() {
-    //     this.loadItems(this.actualPage)
-    // },
+    actualPage() {
+      this.loadItems(this.actualPage)
+    },
   },
 }
 </script>
