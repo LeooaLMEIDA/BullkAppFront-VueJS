@@ -121,7 +121,7 @@ export default defineComponent({
           //params.value = this.inputValue
 
           const filterObject = {
-            route: `${this.object.route}/${subRoute}`,
+            route: `${this.object.route}`,
             params,
           }
           this.$emit('filter', filterObject)

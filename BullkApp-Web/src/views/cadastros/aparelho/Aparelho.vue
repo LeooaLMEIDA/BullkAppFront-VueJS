@@ -71,8 +71,8 @@ export default {
       {
         label: 'Nome',
         ref: 'usuarName',
-        route: 'aparelho',
-        subRoute: 'pages/filter',
+        route: 'aparelho/pages/filter',
+        subRoute: '',
         param: 'descricao',
         type: 'text',
         signal: '',
@@ -115,21 +115,18 @@ export default {
         if (this.filterParam) {
           this.filterParam.params.page = page
           this.filterParam.params.limit = this.limit
+          console.log(this.filterParam.params);
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get(this.route, query)
-          console.log("ELSE", raw)
+          console.log("ELSE")
+          raw = await get('aparelho/pages', query)
         }
         this.items = raw.data
-        //this.pages = Math.ceil(raw.total / this.limit)
+        console.log(this.items)
+        this.pages = Math.ceil(raw.total / this.limit)
       } else {
         this.modalNotLogged.show()
       }
-
-      let raw = []
-      raw = await get(this.$route.name, {})
-      this.items = raw
-
     },
 
     async edit(id) {

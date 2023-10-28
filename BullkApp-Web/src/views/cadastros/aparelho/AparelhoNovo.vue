@@ -49,8 +49,8 @@ export default {
     route: 'aparelho',
 
     statusData: [
-      { label: "Ativo", value: 'true' },
-      { label: "Inativo", value: 'false' },
+      { label: "Ativo", value: 1 },
+      { label: "Inativo", value: 0 },
     ],
 
   }),
@@ -61,6 +61,7 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            this.object.status ? this.object.status = 1 : this.object.status = 0
           })
           .catch((err) => {
             this.$router.push({ name: 'aparelho' })
@@ -86,7 +87,6 @@ export default {
               this.modalBody = result.response.data
               this.modalError.show()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Aparelho criado com sucesso !')
@@ -105,55 +105,30 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = true : this.object.status = false
-
         if (this.object.id) {
-          const newObj = {
-            id: this.object.id,
-            descricao: this.object.descricao,
-            status: this.object.status,
-          }
+          const newObj = { ...this.object }
+          newObj.status ? newObj.status = true : newObj.status = false
 
           const result = await update(this.route, newObj)
 
-          console.log("RESULT", result)
-
-          if (result.status) {
-            if (result.status != '204' || result.status != '200') {
-              this.modalBody = result.response
-              this.modalError.show()
-            }
-
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Aparelho alterado com sucesso !')
-              this.$router.back()
-            }
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Aparelho alterado com sucesso !')
+            this.$router.back()
           }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()
           }
         }
-
         else {
           const result = await insert(this.route, this.object)
 
-          if (result.status) {
-            console.log(result.status)
-            if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
-              this.modalError.show()
-            }
-
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Aparelho criado com sucesso !')
-              this.$router.back()
-            }
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Aparelho criado com sucesso !')
+            this.$router.back()
           }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()
