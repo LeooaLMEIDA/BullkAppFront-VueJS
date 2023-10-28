@@ -164,6 +164,47 @@ const insertFile = async (route, object) => {
   return result
 }
 
+const insertDual = async (route, object) => {
+  console.log('CRUD', object.file);
+  axios.defaults.withCredentials = true
+
+  const url = `${baseApiUrl}/${route}`
+
+  const formData = new FormData()
+
+  if (Array.isArray(object.file)) {
+    object.file.forEach((file) => {
+      console.log("FOR EACH");
+      formData.append('file', file)
+    })
+  } else {
+    console.log("ELSE CRUD")
+    formData.append('file', object.file)
+  }
+
+  delete object.file
+
+  Object.keys(object).forEach((el) => {
+    formData.append(el, object[el])
+  })
+
+  const result = await axios
+    .post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((res) => {
+      return res
+    })
+    .catch((err) => {
+      console.error(err)
+      return false
+    })
+
+  return result
+}
+
 const getFile = async (route, object) => {
   let url = `${baseApiUrl}/${route}?tableName=${object.tableName}&startDate=${object.startDate}&endDate=${object.endDate}${object.service}`
 
@@ -207,5 +248,6 @@ module.exports = {
   insert,
   validateCurrentPassword,
   insertFile,
+  insertDual,
   getFile,
 }

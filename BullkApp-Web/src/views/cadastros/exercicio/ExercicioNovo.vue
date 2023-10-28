@@ -11,9 +11,10 @@
             :clearable="false" />
           <s-input-text v-model="object.idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
             placeholder="" required />
-          <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10"
-            isDisabled label="Descrição Aparelho" placeholder="" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem" acceptedTypes=".gif" />
+          <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10" isDisabled
+            label="Descrição Aparelho" placeholder="" />
+          <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
+            label="Imagem" acceptedTypes=".gif" />
           <s-input-textarea v-model="object.orientacao" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
             label="Orientação" />
 
@@ -43,7 +44,7 @@
   
 <script>
 import { validateForm } from '@/rule/functions'
-import { insert, getById, update } from '@/crud'
+import { insert, getById, update, insertDual } from '@/crud'
 
 export default {
   name: 'exercicioNew',
@@ -57,7 +58,7 @@ export default {
     modalBody: null,
     title: null,
     route: 'exercicio',
-    descricaoAparelho:null,
+    descricaoAparelho: null,
 
     status: [
       { label: "ATIVO", value: 'true' },
@@ -167,40 +168,44 @@ export default {
           }
 
           delete newObj.idAparelho
-          delete newObj.img
 
           newObj.aparelho = aparelho
 
-          console.log(newObj)
+          const result = await insertDual(this.route, this.object)
 
-          console.log('objeto', this.object);
-          const result = await insert(this.route, this.object)
+          // const result = await insert(this.route, this.object)
 
-          if (result.status) {
-            console.log(result.status)
-            if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
-              this.modalError.show()
-            }
+          // if (result.status) {
+          //   console.log(result.status)
+          //   if (result.status != 204 && result.status != 200) {
+          //     this.modalBody = result.response.data
+          //     this.modalError.show()
+          //   }
 
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
-              this.$router.back()
-            }
-          }
+          //   else {
+          //     this.$store.dispatch('setShowToast', true)
+          //     this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
+          //     this.$router.back()
+          //   }
+          // }
 
-          else {
-            this.modalBody = result.response.data
-            this.modalError.show()
-          }
+          // else {
+          //   this.modalBody = result.response.data
+          //   this.modalError.show()
+          // }
         }
       }
 
       else { this.modalNotLogged.show() }
     },
 
-    logout() { logout(this) }
+    logout() { logout(this) },
+
+    handleSelectedFile(file) {
+      this.object.file = file;
+      console.log('HANDLE', this.object.file)
+    }
+
   },
 
   mounted() {

@@ -2,8 +2,15 @@
   <div :class="`mb-3 ${divClass}`">
     <s-label :label="label" :required="required" />
     <div class="input-group mb-3">
-      <input ref="file" @change="updateValue" type="file" class="form-control" :class="{ 'is-invalid': hasError }"
-        @blur="updateValue" :accept="acceptedTypes" />
+      <input
+        ref="fileInput"
+        @change="handleFileChange"
+        type="file"
+        class="form-control"
+        :class="{ 'is-invalid': hasError }"
+        :multiple="multiple"
+        :accept="acceptedTypes"
+      />
       <div class="invalid-feedback" v-if="hasError">
         {{ error }}
       </div>
@@ -24,24 +31,29 @@ export default defineComponent({
     divClass: String,
     label: String,
     required: Boolean,
-    modelValue: File,
+    selectedFile: File,
     multiple: { type: Boolean, default: false },
     acceptedTypes: Array
   },
 
   data: () => ({
-    inputValue: File,
     error: null,
     hasError: false,
   }),
 
   methods: {
+    handleFileChange(event) {
+      const selectedFile = event.target.files[0];
+      this.$emit('fileSelected', selectedFile);
+    },
+
     update() {
-      if (this.$refs.file) {
-        this.inputValue = this.$refs.file.files[0]
-        this.$emit('update:modelValue', this.inputValue)
-      } else {
-        this.inputValue = ''
+      if(this.selectedFile) {
+        this.$refs.fileInput.value = null;
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(new File([this.selectedFile], this.selectedFile.name));
+        this.$refs.fileInput.files = dataTransfer.files;
       }
     },
 
@@ -51,17 +63,13 @@ export default defineComponent({
     },
   },
 
-  emmits: ['update:modelValue'],
-
   created() {
     this.inputValue = this.modelValue
   },
 
   watch: {
-    inputValue() {
-      if (this.inputValue) {
-        this.updateValue()
-      }
+    selectedFile() {
+      this.updateValue()
     }
   }
 })
