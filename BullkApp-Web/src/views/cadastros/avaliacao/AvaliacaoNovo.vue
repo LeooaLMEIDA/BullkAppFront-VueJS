@@ -4,15 +4,16 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-6" label="Descrição"
+          <s-input-text v-model="object.descricao" ref="nomeAluno" maxlength="40" divClass="col-md-6" label="Descrição"
             required />
-          <s-input-text v-model="object.idAluno" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno"
+          <s-input-text v-model="object.idUsuario" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno"
             placeholder="" required />
-          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
-            label="Nome Aluno" placeholder="" />
-          <s-input-textarea v-model="object.descricao" ref="descricao" divClass="col-md-12" label="Observação"
+          <!-- <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
+            label="Nome Aluno" placeholder="" /> -->
+          <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
             placeholder="" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem" :acceptedTypes="['.pdf']" />
+          <!-- <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
+            label="Imagem" acceptedTypes=".pdf" /> -->
         </div>
         <div class="row">
           <s-label-required />
@@ -54,12 +55,11 @@ export default {
     title: null,
     route: 'avaliacao',
 
-    statusData: [
-      { label: "Ativo", value: 1 },
-      { label: "Inativo", value: 0 },
-    ],
+    // statusData: [
+    //   { label: "Ativo", value: 1 },
+    //   { label: "Inativo", value: 0 },
+    // ],
 
-    idAluno: null,
     nomeAluno: "",
 
   }),
@@ -86,7 +86,7 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = 1 : this.object.status = 0
+          // this.object.status ? this.object.status = 1 : this.object.status = 0
 
           const result = await insert(this.route, this.object)
 
@@ -114,16 +114,18 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
+        // this.object.status ? this.object.status = 1 : this.object.status = 0
 
         if (this.object.id) {
-          const newObj = {
-            id: this.object.id,
-            descricao: this.object.descricao,
-            status: this.object.status,
-          }
+          console.log(this.object)
 
-          const result = await update(this.route, this.$route.params.id, newObj)
+          // const newObj = {
+          //   id: this.object.id,
+          //   descricao: this.object.descricao,
+          //   status: this.object.status,
+          // }
+
+          const result = await update(this.route, this.$route.params.id, this.object)
 
           if (result.status) {
             if (result.status != '204') {
@@ -148,7 +150,6 @@ export default {
           const result = await insert(this.route, this.object)
 
           if (result.status) {
-            console.log(result.status)
             if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
@@ -171,7 +172,11 @@ export default {
       else { this.modalNotLogged.show() }
     },
 
-    logout() { logout(this) }
+    logout() { logout(this) },
+
+    handleSelectedFile(file) {
+      this.object.file = file;
+    }
   },
 
   mounted() {

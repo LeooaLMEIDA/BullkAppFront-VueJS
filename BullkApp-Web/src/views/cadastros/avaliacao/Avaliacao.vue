@@ -17,8 +17,8 @@
             <template v-slot:observacao="{ item }">
               {{ item.observacao }}
             </template>
-            <template v-slot:aluno="{ item }">
-              {{ item.observacao }}
+            <template v-slot:idUsuario="{ item }">
+              {{ item.idUsuario }}
             </template>
             <template v-slot:actions="{ item }">
               <div class="text-center">

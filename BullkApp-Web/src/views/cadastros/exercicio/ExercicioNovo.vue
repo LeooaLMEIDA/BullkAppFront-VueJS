@@ -203,7 +203,6 @@ export default {
 
     handleSelectedFile(file) {
       this.object.file = file;
-      console.log('HANDLE', this.object.file)
     }
 
   },

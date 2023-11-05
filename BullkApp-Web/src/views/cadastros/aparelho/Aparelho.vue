@@ -121,8 +121,6 @@ export default {
         }
         this.items = raw.data
         this.pages = Math.ceil(raw.total / this.limit)
-
-        console.log("PAGES", this.pages);
       } else {
         this.modalNotLogged.show()
       }

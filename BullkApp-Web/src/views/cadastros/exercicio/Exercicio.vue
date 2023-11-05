@@ -135,7 +135,6 @@ export default {
 
       let raw = []
       raw = await get(this.$route.name, {})
-      console.log(raw);
       this.items = raw
 
     },

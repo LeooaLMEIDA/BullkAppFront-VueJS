@@ -63,7 +63,6 @@ const insert = async (route, object) => {
       return res
     })
     .catch((err) => {
-      console.log(err)
       return err
     })
 
@@ -74,8 +73,6 @@ const update = async (route, object) => {
   axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
-  console.log(url);
-  console.log("OBJECT", object);
 
   const result = await axios
     .put(url, object)
@@ -104,7 +101,6 @@ const remove = async (route, id) => {
       return false
     })
 
-  console.log(result);
 
   return result
 }
@@ -119,7 +115,6 @@ const validateCurrentPassword = async (route, object) => {
       return res
     })
     .catch((err) => {
-      console.log(err)
       return err
     })
 
@@ -165,7 +160,6 @@ const insertFile = async (route, object) => {
 }
 
 const insertDual = async (route, object) => {
-  console.log('CRUD', object.file);
   axios.defaults.withCredentials = true
 
   const url = `${baseApiUrl}/${route}`
@@ -174,11 +168,9 @@ const insertDual = async (route, object) => {
 
   if (Array.isArray(object.file)) {
     object.file.forEach((file) => {
-      console.log("FOR EACH");
       formData.append('file', file)
     })
   } else {
-    console.log("ELSE CRUD")
     formData.append('file', object.file)
   }
 
