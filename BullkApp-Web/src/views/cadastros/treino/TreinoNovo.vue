@@ -139,7 +139,7 @@ export default {
             descricao: this.object.descricao,
             status: this.object.status,
           }
-
+          
           const result = await update(this.route, this.$route.params.id, newObj)
 
           if (result.status) {

@@ -8,12 +8,12 @@
             required />
           <s-input-text v-model="object.idUsuario" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno"
             placeholder="" required />
-          <!-- <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
-            label="Nome Aluno" placeholder="" /> -->
+          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
+            label="Nome Aluno" placeholder="" />
           <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
             placeholder="" />
-          <!-- <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" acceptedTypes=".pdf" /> -->
+          <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
+            label="Imagem" acceptedTypes=".pdf" />
         </div>
         <div class="row">
           <s-label-required />
@@ -119,11 +119,8 @@ export default {
         if (this.object.id) {
           console.log(this.object)
 
-          // const newObj = {
-          //   id: this.object.id,
-          //   descricao: this.object.descricao,
-          //   status: this.object.status,
-          // }
+          const newObj = { ...this.object }
+          // delete newObj 
 
           const result = await update(this.route, this.$route.params.id, this.object)
 
@@ -147,6 +144,12 @@ export default {
         }
 
         else {
+          if (this.object.file) {
+            this.object.arqAvaliacao = this.object.file
+          } else {
+            this.object.arqAvaliacao = ""
+          }
+
           const result = await insert(this.route, this.object)
 
           if (result.status) {
