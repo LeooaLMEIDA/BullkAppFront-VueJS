@@ -46,7 +46,7 @@ export default {
   name: 'avaliacoesNew',
 
   data: () => ({
-    object: {},
+    object: { arqAvaliacao: null },
     valid: false,
     Modal: null,
     modalError: null,
@@ -120,7 +120,7 @@ export default {
           console.log(this.object)
 
           const newObj = { ...this.object }
-          // delete newObj 
+          delete newObj.idUsuario
 
           const result = await update(this.route, this.$route.params.id, this.object)
 
@@ -144,11 +144,11 @@ export default {
         }
 
         else {
-          if (this.object.file) {
-            this.object.arqAvaliacao = this.object.file
-          } else {
-            this.object.arqAvaliacao = ""
-          }
+          // if (this.object.file) {
+          //   this.object.arqAvaliacao = this.object.file
+          // } else {
+          //   this.object.arqAvaliacao = ""
+          // }
 
           const result = await insert(this.route, this.object)
 
@@ -179,6 +179,16 @@ export default {
 
     handleSelectedFile(file) {
       this.object.file = file;
+      const reader = new FileReader();
+
+      if (file) {
+        reader.onload = (event) => {
+          const base64String = event.target.result
+          this.object.arqAvaliacao = base64String;
+        }
+      }
+
+      reader.readAsDataURL(file);
     }
   },
 
@@ -193,6 +203,7 @@ export default {
 
     if (id) { await this.loadItem(id) }
   },
+
 }
 </script>
   
