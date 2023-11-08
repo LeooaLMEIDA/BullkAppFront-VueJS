@@ -23,6 +23,12 @@
             <template v-slot:sexo="{ item }">
               {{ item.sexo }}
             </template>
+            <template v-slot:dtNascimento="{ item }">
+              {{ formatDate(item.dtNascimento) }}
+            </template>
+            <template v-slot:tpUsuario="{ item }">
+              {{ item.tpUsuario }}
+            </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
                 <s-chip :color="getStatusColor(item.status)" :text="translateStatusText(item.status)">
@@ -63,6 +69,9 @@ export default {
       { title: 'Id', field: 'id' },
       { title: 'Descrição', field: 'descricao' },
       { title: 'Email', field: 'email' },
+      { title: 'Sexo', field: 'sexo' },
+      { title: 'Nascimento', field: 'dtNascimento' },
+      { title: 'Tipo Usuário', field: 'tpUsuario' },
       { title: 'Status', field: 'status' },
       { title: 'Ações', field: 'actions' },
     ],
@@ -182,6 +191,15 @@ export default {
 
     handleIndex(event) {
       this.filterOption = event
+    },
+
+    formatDate(datetime) {
+      if (datetime) {
+        const date = new Date(datetime);
+        return date.toLocaleDateString(); // Isso irá formatar a data no formato padrão do navegador
+        // Se desejar um formato de data específico, você pode usar bibliotecas como date-fns ou moment.js
+      }
+      return ''; // Retorne uma string vazia se o valor for nulo
     },
 
     // changeHeaders() {

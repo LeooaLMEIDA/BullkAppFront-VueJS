@@ -13,7 +13,7 @@
           <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
             placeholder="" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" acceptedTypes=".pdf" />
+            label="Imagem" acceptedTypes=".pdf" required />
         </div>
         <div class="row">
           <s-label-required />
