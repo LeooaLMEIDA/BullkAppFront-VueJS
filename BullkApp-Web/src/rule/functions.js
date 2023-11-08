@@ -37,14 +37,14 @@ export async function validateForm(ref) {
 
 export function getRouteName(route) {
   let theRoute = {
-    user: {
+    usuario: {
       parent: 'Administração',
       name: 'Usuários',
-      path: 'user',
+      path: 'usuario',
       childrenName: 'Cadastro de Usuário',
-      childrenPath: 'userNew',
+      childrenPath: 'usuarioNew',
       UpdateName: 'Edição de Usuário',
-      UpdatePath: 'userUpdate',
+      UpdatePath: 'usuarioUpdate',
     },
     aparelho: {
       parent: 'Cadastros',

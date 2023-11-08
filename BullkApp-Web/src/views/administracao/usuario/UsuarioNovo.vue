@@ -48,7 +48,7 @@ import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
-  name: 'UserNew',
+  name: 'UsuarioNew',
 
   data: () => ({
     object: {},
@@ -58,7 +58,7 @@ export default {
     modalNotLogged: null,
     modalBody: null,
     title: null,
-    route: 'user',
+    route: 'usuario',
     headersGroup: ['Grupo', 'Ações'],
     itemsGroup: [
       { 'name': 'Grupo 01' },
@@ -98,7 +98,7 @@ export default {
           })
           .catch((err) => {
             console.error(err)
-            this.$router.push({ name: 'user' })
+            this.$router.push({ name: 'usuario' })
           })
       }
 
@@ -202,7 +202,7 @@ export default {
   },
 
   mounted() {
-    this.$route.name == 'userUpdate' ? this.title = 'Edição de Usuário' : this.title = 'Cadastro de Usuário'
+    this.$route.name == 'usuarioUpdate' ? this.title = 'Edição de Usuário' : this.title = 'Cadastro de Usuário'
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
     this.modalError = new this.$Modal(this.$refs.modalError.$refs.modalPattern)
   },

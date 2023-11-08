@@ -86,7 +86,6 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          // this.object.status ? this.object.status = 1 : this.object.status = 0
 
           const result = await insert(this.route, this.object)
 
@@ -114,29 +113,17 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        // this.object.status ? this.object.status = 1 : this.object.status = 0
-
         if (this.object.id) {
-          console.log(this.object)
-
           const newObj = { ...this.object }
-          delete newObj.idUsuario
+          delete newObj.file
 
-          const result = await update(this.route, this.$route.params.id, this.object)
+          const result = await update(this.route, newObj)
 
-          if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
-            }
-
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
-              this.$router.back()
-            }
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Aparelho alterado com sucesso !')
+            this.$router.back()
           }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()
@@ -144,11 +131,6 @@ export default {
         }
 
         else {
-          // if (this.object.file) {
-          //   this.object.arqAvaliacao = this.object.file
-          // } else {
-          //   this.object.arqAvaliacao = ""
-          // }
 
           const result = await insert(this.route, this.object)
 
@@ -183,7 +165,7 @@ export default {
 
       if (file) {
         reader.onload = (event) => {
-          const base64String = event.target.result
+          const base64String = event.target.result.split(',')[1]
           this.object.arqAvaliacao = base64String;
         }
       }

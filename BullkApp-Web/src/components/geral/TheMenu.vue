@@ -87,7 +87,7 @@ export default {
         icon: 'bi bi-gear-fill',
         children: [
           {
-            code: 'user',
+            code: 'usuario',
             title: 'Usuários',
             icon: 'bi bi-circle',
             child: 'userGroup',

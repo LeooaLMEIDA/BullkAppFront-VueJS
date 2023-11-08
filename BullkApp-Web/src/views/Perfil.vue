@@ -144,7 +144,7 @@ export default {
   name: 'MyProfile',
 
   data: () => ({
-    route: 'user',
+    route: 'usuario',
 
     headers: ['Nome', 'E-mail', 'Status', 'Ações'],
     object: {},

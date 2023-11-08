@@ -16,17 +16,17 @@ const routes = [
   /* ########## USUARIO ########## */
   {
     path: '/administracao/usuario',
-    name: 'user',
+    name: 'usuario',
     component: () => import('@/views/administracao/usuario/Usuario.vue')
   },
   {
     path: '/administracao/usuario/cadastro/novo',
-    name: 'userNew',
+    name: 'usuarioNew',
     component: () => import('@/views/administracao/usuario/UsuarioNovo.vue')
   },
   {
     path: '/administracao/usuario/:id/editar',
-    name: 'userUpdate',
+    name: 'usuarioUpdate',
     component: () => import('@/views/administracao/usuario/UsuarioNovo.vue')
   },
   /* ########## APARELHO ########## */
