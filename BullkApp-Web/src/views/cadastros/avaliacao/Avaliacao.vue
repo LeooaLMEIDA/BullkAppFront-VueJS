@@ -42,7 +42,7 @@
 
 <script>
 import { logout } from '@/rule/functions.js'
-import { get, remove, update, search } from '@/crud.js'
+import { get, remove } from '@/crud.js'
 
 export default {
   name: 'avaliacao',
@@ -108,7 +108,7 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      /*if (await this.$checkSession()) {
+      if (await this.$checkSession()) {
         const query = { params: { page: page, limit: this.limit } }
         let raw = []
         if (this.filterParam) {
@@ -116,18 +116,13 @@ export default {
           this.filterParam.params.limit = this.limit
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get(this.route, query)
+          raw = await get('avaliacao/pages/', query)
         }
-        this.items = raw
-          this.pages = Math.ceil(raw.total / this.limit)
+        this.items = raw.data
+        this.pages = Math.ceil(raw.total / this.limit)
       } else {
-       this.modalNotLogged.show()
-      } */
-
-      let raw = []
-      raw = await get(this.$route.name, {})
-      this.items = raw
-
+        this.modalNotLogged.show()
+      }
     },
 
     async edit(id) {

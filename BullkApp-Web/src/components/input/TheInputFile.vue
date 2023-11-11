@@ -2,15 +2,8 @@
   <div :class="`mb-3 ${divClass}`">
     <s-label :label="label" :required="required" />
     <div class="input-group mb-3">
-      <input
-        ref="fileInput"
-        @change="handleFileChange"
-        type="file"
-        class="form-control"
-        :class="{ 'is-invalid': hasError }"
-        :multiple="multiple"
-        :accept="acceptedTypes"
-      />
+      <input ref="fileInput" @change="handleFileChange" type="file" class="form-control"
+        :class="{ 'is-invalid': hasError }" :multiple="multiple" :accept="acceptedTypes" />
       <div class="invalid-feedback" v-if="hasError">
         {{ error }}
       </div>
@@ -48,7 +41,7 @@ export default defineComponent({
     },
 
     update() {
-      if(this.selectedFile) {
+      if (this.selectedFile) {
         this.$refs.fileInput.value = null;
 
         const dataTransfer = new DataTransfer();
@@ -58,13 +51,9 @@ export default defineComponent({
     },
 
     updateValue() {
-      validateFile(this.inputValue, this.required, this, 'Este campo é obrigatório')
+      validateFile(this.selectedFile, this.required, this, 'Este campo é obrigatório')
       this.update()
     },
-  },
-
-  created() {
-    this.inputValue = this.modelValue
   },
 
   watch: {

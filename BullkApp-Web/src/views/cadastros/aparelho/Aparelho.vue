@@ -71,9 +71,10 @@ export default {
       {
         label: 'Nome',
         ref: 'usuarName',
-        route: 'aparelho/pages/filter',
+        route: 'aparelho/pages/filter/str',
         subRoute: '',
-        param: 'descricao',
+        param: 'value',
+        column: 'descricao',
         type: 'text',
         signal: '',
         operator: '',

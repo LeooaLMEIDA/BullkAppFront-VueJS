@@ -80,10 +80,13 @@ export default {
         if (await validateForm(this.$refs.form)) {
           this.object.status ? this.object.status = true : this.object.status = false
 
-          const result = await insert(this.route, this.object)
+          const newObj = { ...this.object }
+          newObj.status ? newObj.status = true : newObj.status = false
+
+          const result = await insert(this.route, newObj)
 
           if (result.status) {
-            if (result.status != '204') {
+            if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
             }

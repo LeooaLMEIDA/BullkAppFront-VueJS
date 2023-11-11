@@ -35,6 +35,8 @@ const validateDate = (value, required, object, messageRequired) => {
 
 
 const validateFile = (value, required, object, messageRequired) => {
+  console.log(value);
+
   if (!value && required) {
     setError(object, messageRequired)
     return false

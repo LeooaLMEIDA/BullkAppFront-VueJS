@@ -4,16 +4,16 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="nomeAluno" maxlength="40" divClass="col-md-6" label="Descrição"
+          <s-input-text v-model="object.descricao" ref="nomeAluno" maxlength="10" divClass="col-md-6" label="Descrição"
             required />
-          <s-input-text v-model="object.idUsuario" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno"
-            placeholder="" required />
+          <s-input-text v-model="idAluno" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno" placeholder=""
+            required />
           <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
             label="Nome Aluno" placeholder="" />
           <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
             placeholder="" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" acceptedTypes=".pdf" required />
+            label="Imagem" :acceptedTypes="['.pdf']" required />
         </div>
         <div class="row">
           <s-label-required />
@@ -46,7 +46,9 @@ export default {
   name: 'avaliacoesNew',
 
   data: () => ({
-    object: { arqAvaliacao: null },
+    object: {
+      arqAvaliacao: null
+    },
     valid: false,
     Modal: null,
     modalError: null,
@@ -54,13 +56,8 @@ export default {
     modalBody: null,
     title: null,
     route: 'avaliacao',
-
-    // statusData: [
-    //   { label: "Ativo", value: 1 },
-    //   { label: "Inativo", value: 0 },
-    // ],
-
-    nomeAluno: "",
+    idAluno: null,
+    nomeAluno: null,
 
   }),
 
@@ -70,6 +67,8 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            this.idAluno = res.usuario.id
+            this.nomeAluno = res.usuario.nome
           })
           .catch((err) => {
             this.$router.push({ name: 'avaliacao' })
@@ -87,17 +86,24 @@ export default {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
 
-          const result = await insert(this.route, this.object)
+          this.object.usuario.id = this.idAluno
+          this.object.usuario.nome = this.nomeAluno
+          this.object.idUsuario = this.idAluno
+
+          const newObj = { ...this.object }
+          delete newObj.file
+
+          const result = await insert(this.route, newObj)
 
           if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
+            if (result.status == 204 && result.status == 200) {
+              this.$store.dispatch('setShowToast', true)
+              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
+              this.$router.back()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criado com sucesso !')
               this.object = {}
             }
           }
@@ -114,6 +120,10 @@ export default {
     async save() {
       if (await this.$checkSession()) {
         if (this.object.id) {
+          this.object.usuario.id = this.idAluno
+          this.object.usuario.nome = this.nomeAluno
+          this.object.idUsuario = this.idAluno
+
           const newObj = { ...this.object }
           delete newObj.file
 
@@ -125,12 +135,13 @@ export default {
             this.$router.back()
           }
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors
             this.modalError.show()
           }
         }
 
         else {
+          this.object.idUsuario = this.idAluno
 
           const result = await insert(this.route, this.object)
 
@@ -185,6 +196,22 @@ export default {
 
     if (id) { await this.loadItem(id) }
   },
+
+  watch: {
+    async idAluno() {
+      await getById("usuario", this.idAluno)
+        .then((res) => {
+          this.nomeAluno = res.nome
+        })
+        .catch((err) => {
+          console.log(err.erros)
+          this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+          this.modalError.show()
+        })
+
+      this.idAluno
+    }
+  }
 
 }
 </script>

@@ -106,15 +106,17 @@ const remove = async (route, id) => {
 }
 
 const validateCurrentPassword = async (route, object) => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
   const result = await axios
     .post(url, object)
     .then((res) => {
+      console.log(res)
       return res
     })
     .catch((err) => {
+      console.log(err)
       return err
     })
 
@@ -122,7 +124,7 @@ const validateCurrentPassword = async (route, object) => {
 }
 
 const insertFile = async (route, object) => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
 
@@ -160,7 +162,7 @@ const insertFile = async (route, object) => {
 }
 
 const insertDual = async (route, object) => {
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const url = `${baseApiUrl}/${route}`
 
@@ -200,7 +202,7 @@ const insertDual = async (route, object) => {
 const getFile = async (route, object) => {
   let url = `${baseApiUrl}/${route}?tableName=${object.tableName}&startDate=${object.startDate}&endDate=${object.endDate}${object.service}`
 
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = false
 
   const result = await axios({
     url: url,

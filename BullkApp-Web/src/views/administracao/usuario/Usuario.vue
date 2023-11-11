@@ -38,6 +38,8 @@
             </template>
             <template v-slot:actions="{ item }">
               <div class="text-center">
+                <i class="bi bi-lock-fill text-secondary px-1" style="cursor: pointer"
+                  @click="showModalUpdatePassword(item)"></i>
                 <i class="bi bi-pencil-fill text-secondary px-1" style="cursor: pointer" @click="edit(item.id)"></i>
                 <i class="bi bi-trash-fill text-danger px-1" style="cursor: pointer" @click="removeConfirm(item)"></i>
               </div>
@@ -51,14 +53,47 @@
       </div>
       <!-- <TheLoader v-if="loader" /> -->
     </div>
+    <div class="modal fade" ref="modalUpdatePassword" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-hidden="true">
+      <form ref="form" @submit.prevent="submitForm">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header bg-primary">
+              <span class="fs-5 text-white">Atualização de Senha</span>
+            </div>
+            <div class="modal-body text-dark">
+              <div class="row">
+                <div class="col-12">
+                  <s-input-password v-model="currenntPassword" ref="currenntPassword" divClass="col-12"
+                    label="Senha Atual" placeholder="••••••••" required />
+                  <s-input-password v-model="object.senha" ref="password" divClass="col-12" label="Nova Senha"
+                    placeholder="••••••••" required />
+                  <s-input-password v-model="passwordConfirm" ref="passwordConfirm" divClass="col-12"
+                    label="Confirmação Nova Senha" placeholder="••••••••" required />
+                  <div class="row">
+                    <s-label-required />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <s-button type="submit" label="Salvar" color="primary" icon="check2" />
+              <s-button type="button" label="Cancelar" color="outline-danger" icon="x-lg" data-bs-dismiss="modal"
+                @click="clearData" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
     <s-modal-delete ref="modalDelete" @confirm="remove" />
     <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
+    <s-modal-error ref="modalError" modalTitle="Falha ao atualizar a senha!" :modalBody="modalErrorBody" />
   </div>
 </template>
 
 <script>
-import { logout } from '@/rule/functions.js'
-import { get, remove, update, search } from '@/crud.js'
+import { logout, validateForm } from '@/rule/functions.js'
+import { get, remove, update, validateCurrentPassword, search } from '@/crud.js'
 
 export default {
   name: 'usuario',
@@ -77,12 +112,17 @@ export default {
     ],
     items: [],
     object: {},
+    passwordConfirm: null,
+    currenntPassword: null,
     selectedItem: null,
     Modal: null,
     choosed: null,
     loader: false,
     modalDelete: null,
     modalNotLogged: null,
+    modalUpdatePassword: null,
+    modalError: null,
+    modalErrorBody: null,
     pages: null,
     actualPage: 1,
     limit: 10,
@@ -146,6 +186,32 @@ export default {
       }
     },
 
+    async submitForm() {
+      if (await validateForm(this.$refs.form)) {
+        this.save()
+      }
+    },
+
+    async save() {
+      if (this.currenntPassword) {
+        const validCurrentUpdateObject = {
+          id: this.object.id,
+          senha: this.currenntPassword,
+        }
+
+        const result = await validateCurrentPassword('usuario/validatePassword', validCurrentUpdateObject)
+
+        if (result.status == 204) {
+          this.updatePassword()
+        } else {
+          this.modalErrorBody = 'A senha atual informada está incorreta. Por favor, verifique.'
+          this.modalError.show()
+        }
+      } else {
+        this.updatePassword()
+      }
+    },
+
     async edit(id) {
       const route = {
         name: 'usuarioUpdate',
@@ -196,10 +262,53 @@ export default {
     formatDate(datetime) {
       if (datetime) {
         const date = new Date(datetime);
-        return date.toLocaleDateString(); // Isso irá formatar a data no formato padrão do navegador
-        // Se desejar um formato de data específico, você pode usar bibliotecas como date-fns ou moment.js
+        return date.toLocaleDateString();
       }
-      return ''; // Retorne uma string vazia se o valor for nulo
+    },
+
+    showModalUpdatePassword(item) {
+      this.modalUpdatePassword.show()
+      this.object = item
+    },
+
+    async updatePassword() {
+      if (this.object.senha && this.passwordConfirm) {
+        if (this.object.senha !== this.passwordConfirm) {
+          this.modalErrorBody = 'As senhas informadas não são iguais. Por favor, verifique.'
+          this.modalError.show()
+        } else {
+          const validCurrentUpdateObject = {
+            ...this.object
+          }
+          delete validateCurrentPassword.urlAvatar
+          console.log(validCurrentUpdateObject)
+
+          const result = await update(this.route, this.object.id, validCurrentUpdateObject)
+
+          if (result.status) {
+            if (result.status != '204') {
+              this.modaErrorlBody = result.response.data
+              this.modalError.show()
+            } else {
+              this.$store.dispatch('setShowToast', true)
+              this.$store.dispatch('setToastMessage', 'Senha alterada com sucesso !')
+            }
+          } else {
+            this.modalErrorBody = result.response.data
+            this.modalError.show()
+          }
+        }
+
+        this.clearData()
+        this.modalUpdatePassword.hide()
+      }
+    },
+
+    clearData() {
+      this.object.password = null
+      this.passwordConfirm = null
+      this.selectedItem = null
+      this.currenntPassword = null
     },
 
     // changeHeaders() {
@@ -222,6 +331,8 @@ export default {
   async mounted() {
     this.modalDelete = new this.$Modal(this.$refs.modalDelete.$refs.modalPattern)
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
+    this.modalError = new this.$Modal(this.$refs.modalError.$refs.modalPattern)
+    this.modalUpdatePassword = new this.$Modal(this.$refs.modalUpdatePassword)
 
     await this.loadItems()
   },

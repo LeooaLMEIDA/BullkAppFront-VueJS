@@ -115,7 +115,10 @@ export default defineComponent({
         }
 
         if (this.inputValue != '' || this.inputValue != null) {
-          //params.column = this.object.param
+          if (this.object.column) {
+            params.column = this.object.column
+          }
+
           //params.operator = this.object.operator
           //params.signal = this.object.signal
           //params.value = this.inputValue

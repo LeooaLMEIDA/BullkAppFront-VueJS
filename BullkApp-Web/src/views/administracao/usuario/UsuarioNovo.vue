@@ -4,11 +4,11 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.name" ref="name" divClass="col-12 col-md-4 col-xxl-4" label="Nome"
+          <s-input-text v-model="object.nome" ref="nome" divClass="col-12 col-md-4 col-xxl-4" label="Nome"
             placeholder="Nome Completo" required />
           <s-input-email v-model="object.email" ref="email" divClass="col-12 col-md-4 col-xxl-4" label="E-mail"
             placeholder="email@email.com" required />
-          <s-input-password v-if="!object.id" v-model="object.password" ref="password" divClass="col-12 col-md-2"
+          <s-input-password v-if="!object.id" v-model="object.senha" ref="password" divClass="col-12 col-md-2"
             label="Senha" placeholder="••••••••" required />
           <s-select v-model="object.sexo" divClass="col-md-2" label="Sexo" :items="sexos" :clearable="false" required />
           <s-input-date v-model="object.dtNascimento" divClass="col-md-2" label="Nascimento" required />
@@ -17,7 +17,7 @@
           <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
             required />
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
-          <s-input-file v-model="object.img" ref="image" divClass="col-md-12" label="Imagem"
+          <s-input-file v-model="object.file" ref="image" divClass="col-md-12" label="Imagem"
             :acceptedTypes="['.png', '.jpeg']" />
         </div>
         <div class="row">
@@ -51,7 +51,7 @@ export default {
   name: 'UsuarioNew',
 
   data: () => ({
-    object: {},
+    object: { urlAvatar: null },
     valid: false,
     Modal: null,
     modalError: null,
@@ -60,13 +60,6 @@ export default {
     title: null,
     route: 'usuario',
     headersGroup: ['Grupo', 'Ações'],
-    itemsGroup: [
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-      { 'name': 'Grupo 01' },
-    ],
     sexos: [
       { label: "Masculino", value: 'MASCULINO' },
       { label: "Feminino", value: 'FEMININO' }
@@ -141,31 +134,17 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
-
         if (this.object.id) {
+          const newObj = { ...this.object }
+          delete newObj.file
 
-          const newObj = {
-            name: this.object.name,
-            email: this.object.email,
-            status: this.object.status
+          const result = await update(this.route, newObj)
+
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Usuário alterado com sucesso !')
+            this.$router.back()
           }
-
-          const result = await update(this.route, this.$route.params.id, newObj)
-
-          if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
-            }
-
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Usuário alterado com sucesso !')
-              this.$router.back()
-            }
-          }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()
@@ -173,18 +152,20 @@ export default {
         }
 
         else {
+
+          this.object.usuario.id = idAluno
           const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status != '204') {
+            if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
             }
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
-              this.$router.back()
+              this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
+              this.object = {}
             }
           }
 
@@ -194,11 +175,24 @@ export default {
           }
         }
       }
-
       else { this.modalNotLogged.show() }
     },
 
-    logout() { logout(this) }
+    logout() { logout(this) },
+
+    handleSelectedFile(file) {
+      this.object.file = file;
+      const reader = new FileReader();
+
+      if (file) {
+        reader.onload = (event) => {
+          const base64String = event.target.result.split(',')[1]
+          this.object.arqAvaliacao = base64String;
+        }
+      }
+
+      reader.readAsDataURL(file);
+    }
   },
 
   mounted() {
