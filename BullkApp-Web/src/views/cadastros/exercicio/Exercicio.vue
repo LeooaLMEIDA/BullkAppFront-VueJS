@@ -77,14 +77,15 @@ export default {
 
     filterObject: [
       {
-        label: 'Nome',
-        ref: 'usuarName',
-        route: 'aparelho',
-        subRoute: 'byIdUser',
-        param: 'idUser',
+        label: 'Descrição',
+        ref: 'descExercise',
+        route: 'exercicio/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'descricao',
         type: 'text',
-        signal: '=',
-        operator: 'LIKE',
+        signal: '',
+        operator: '',
         index: 1
       },
       /*{
