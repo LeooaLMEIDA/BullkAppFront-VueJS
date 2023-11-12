@@ -9,12 +9,12 @@
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-select v-model="object.grpMusculos" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
             :clearable="false" />
-          <s-input-text v-model="object.idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
+          <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
             placeholder="" required />
           <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10" isDisabled
             label="Descrição Aparelho" placeholder="" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" acceptedTypes=".gif" required/>
+            label="Imagem" :acceptedTypes="['.gif']" required />
           <s-input-textarea v-model="object.orientacao" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
             label="Orientação" />
         </div>
@@ -43,13 +43,15 @@
   
 <script>
 import { validateForm } from '@/rule/functions'
-import { insert, getById, update, insertDual } from '@/crud'
+import { insert, getById, update } from '@/crud'
 
 export default {
   name: 'exercicioNew',
 
   data: () => ({
-    object: {},
+    object: {
+      imgIlustracao: null
+    },
     valid: false,
     Modal: null,
     modalError: null,
@@ -57,11 +59,12 @@ export default {
     modalBody: null,
     title: null,
     route: 'exercicio',
+    idAparelho: null,
     descricaoAparelho: null,
 
     status: [
-      { label: "ATIVO", value: 'true' },
-      { label: "INATIVO", value: 'false' }
+      { label: "ATIVO", value: 1 },
+      { label: "INATIVO", value: 0 }
     ],
 
     grupoMusculares: [
@@ -86,6 +89,8 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            this.idAparelho = res.aparelho.id
+            this.descricaoAparelho = res.aparelho.descricao
           })
           .catch((err) => {
             this.$router.push({ name: 'exercicio' })
@@ -102,16 +107,18 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = 1 : this.object.status = 0
+          this.object.status ? this.object.status = true : this.object.status = false
 
-          const result = await insert(this.route, this.object)
+          const newObj = { ...this.object }
+          newObj.status ? newObj.status = true : newObj.status = false
+
+          const result = await insert(this.route, newObj)
 
           if (result.status) {
-            if (result.status != '204') {
+            if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
@@ -130,26 +137,44 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
-
         if (this.object.id) {
-          const newObj = {
-            id: this.object.id,
-            descricao: this.object.descricao,
-            status: this.object.status,
-          }
+          this.object.aparelho.id = this.idAparelho
+          this.object.aparelho.descricao = this.descricaoAparelho
+          this.object.idAparelho = this.idAparelho
 
-          const result = await update(this.route, this.$route.params.id, newObj)
+          const newObj = { ...this.object }
+          delete newObj.file
+
+          console.log("NEWOBJETO: ", newObj)
+
+          newObj.status ? newObj.status = true : newObj.status = false
+
+          const result = await update(this.route, newObj)
+
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Exercício alterado com sucesso !')
+            this.$router.back()
+          }
+          else {
+            this.modalBody = result.response.data
+            this.modalError.show()
+          }
+        }
+        else {
+          this.object.idAparelho = this.idAparelho
+
+          const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status != '204') {
+            if (result.status != 204 && result.status != 200) {
               this.modalBody = result.response.data
               this.modalError.show()
             }
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício alterado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.$router.back()
             }
           }
@@ -159,42 +184,7 @@ export default {
             this.modalError.show()
           }
         }
-
-        else {
-          const newObj = { ...this.object }
-          const aparelho = {
-            id: newObj.idAparelho
-          }
-
-          delete newObj.idAparelho
-
-          newObj.aparelho = aparelho
-
-          const result = await insertDual(this.route, this.object)
-
-          // const result = await insert(this.route, this.object)
-
-          // if (result.status) {
-          //   console.log(result.status)
-          //   if (result.status != 204 && result.status != 200) {
-          //     this.modalBody = result.response.data
-          //     this.modalError.show()
-          //   }
-
-          //   else {
-          //     this.$store.dispatch('setShowToast', true)
-          //     this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
-          //     this.$router.back()
-          //   }
-          // }
-
-          // else {
-          //   this.modalBody = result.response.data
-          //   this.modalError.show()
-          // }
-        }
       }
-
       else { this.modalNotLogged.show() }
     },
 
@@ -202,10 +192,18 @@ export default {
 
     handleSelectedFile(file) {
       this.object.file = file;
+      const reader = new FileReader();
+
+      if (file) {
+        reader.onload = (event) => {
+          const base64String = event.target.result.split(',')[1]
+          this.object.imgIlustracao = base64String;
+        }
+      }
+
+      reader.readAsDataURL(file);
     }
-
   },
-
   mounted() {
     this.$route.name == 'exercicioUpdate' ? this.title = 'Edição de Exercício' : this.title = 'Cadastro de Exercício'
     this.modalNotLogged = new this.$Modal(this.$refs.modalNotLogged.$refs.modalPattern)
@@ -217,6 +215,22 @@ export default {
 
     if (id) { await this.loadItem(id) }
   },
+
+  watch: {
+    async idAparelho() {
+      await getById("aparelho", this.idAparelho)
+        .then((res) => {
+          this.descricaoAparelho = res.descricao
+        })
+        .catch((err) => {
+          console.log(err.erros)
+          this.modalBody = `Aparelho ${this.object.idAparelho} não foi encontrado`
+          this.modalError.show()
+        })
+
+      this.idAparelho
+    }
+  }
 }
 </script>
   

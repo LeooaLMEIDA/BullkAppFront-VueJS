@@ -4,7 +4,7 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="nomeAluno" maxlength="10" divClass="col-md-6" label="Descrição"
+          <s-input-text v-model="object.descricao" ref="descricao" maxlength="10" divClass="col-md-6" label="Descrição"
             required />
           <s-input-text v-model="idAluno" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno" placeholder=""
             required />

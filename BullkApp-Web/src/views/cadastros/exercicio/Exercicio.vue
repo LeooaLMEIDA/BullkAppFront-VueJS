@@ -18,7 +18,7 @@
               {{ item.grpMusculos }}
             </template>
             <template v-slot:aparelho="{ item }">
-              {{ item.aparelho.descricao }}
+              {{ descricaoAparelho }}
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
@@ -117,7 +117,7 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      /*if (await this.$checkSession()) {
+      if (await this.$checkSession()) {
         const query = { params: { page: page, limit: this.limit } }
         let raw = []
         if (this.filterParam) {
@@ -125,18 +125,13 @@ export default {
           this.filterParam.params.limit = this.limit
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get(this.route, query)
+          raw = await get('exercicio/pages/', query)
         }
-        this.items = raw
-          this.pages = Math.ceil(raw.total / this.limit)
+        this.items = raw.data
+        this.pages = Math.ceil(raw.total / this.limit)
       } else {
-       this.modalNotLogged.show()
-      } */
-
-      let raw = []
-      raw = await get(this.$route.name, {})
-      this.items = raw
-
+        this.modalNotLogged.show()
+      }
     },
 
     async edit(id) {
