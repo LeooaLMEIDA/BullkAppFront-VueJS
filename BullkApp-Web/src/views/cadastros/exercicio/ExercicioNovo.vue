@@ -89,6 +89,7 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            this.object.status ? this.object.status = 1 : this.object.status = 0
             this.idAparelho = res.aparelho.id
             this.descricaoAparelho = res.aparelho.descricao
           })

@@ -18,7 +18,7 @@
               {{ item.grpMusculos }}
             </template>
             <template v-slot:aparelho="{ item }">
-              {{ descricaoAparelho }}
+              {{ item.aparelho.descricao }}
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
@@ -75,41 +75,41 @@ export default {
     actualPage: 1,
     limit: 10,
 
-    // filterObject: [
-    //   {
-    //     label: 'Nome',
-    //     ref: 'usuarName',
-    //     route: 'aparelho',
-    //     subRoute: 'byIdUser',
-    //     param: 'idUser',
-    //     type: 'text',
-    //     signal: '=',
-    //     operator: 'LIKE',
-    //     index: 1
-    //   },
-    //   /*{
-    //     label: 'Gênero',
-    //     ref: 'bookGender',
-    //     route: 'book',
-    //     subRoute: 'by-gender',
-    //     param: 'gender',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 2
-    //   },
-    //   {
-    //     label: 'Autor',
-    //     ref: 'bookAuthor',
-    //     route: 'book',
-    //     subRoute: 'by-author',
-    //     param: 'author',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 3
-    //   },*/
-    // ],
+    filterObject: [
+      {
+        label: 'Nome',
+        ref: 'usuarName',
+        route: 'aparelho',
+        subRoute: 'byIdUser',
+        param: 'idUser',
+        type: 'text',
+        signal: '=',
+        operator: 'LIKE',
+        index: 1
+      },
+      /*{
+        label: 'Gênero',
+        ref: 'bookGender',
+        route: 'book',
+        subRoute: 'by-gender',
+        param: 'gender',
+        type: 'text',
+        signal: '',
+        operator: 'LIKE',
+        index: 2
+      },
+      {
+        label: 'Autor',
+        ref: 'bookAuthor',
+        route: 'book',
+        subRoute: 'by-author',
+        param: 'author',
+        type: 'text',
+        signal: '',
+        operator: 'LIKE',
+        index: 3
+      },*/
+    ],
 
     filterOption: 1,
     filterParam: null,
@@ -211,9 +211,9 @@ export default {
       this.loadItems()
       this.changeHeaders()
     },
-    // actualPage() {
-    //     this.loadItems(this.actualPage)
-    // },
+    actualPage() {
+        this.loadItems(this.actualPage)
+    },
   },
 }
 </script>

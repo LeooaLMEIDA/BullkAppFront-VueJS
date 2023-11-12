@@ -43,7 +43,7 @@
 
 <script>
 import { logout } from '@/rule/functions.js'
-import { get, remove, update, search } from '@/crud.js'
+import { get, remove, search } from '@/crud.js'
 
 export default {
   name: 'aparelho',
