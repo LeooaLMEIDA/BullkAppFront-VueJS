@@ -17,8 +17,8 @@
           <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
             required />
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
-          <s-input-file v-model="object.file" ref="image" divClass="col-md-12" label="Imagem"
-            :acceptedTypes="['.png', '.jpeg']" />
+          <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
+            label="Imagem" :acceptedTypes="['.png']" required />
         </div>
         <div class="row">
           <s-label-required />
@@ -59,6 +59,7 @@ export default {
     modalBody: null,
     title: null,
     route: 'usuario',
+
     headersGroup: ['Grupo', 'Ações'],
     sexos: [
       { label: "Masculino", value: 'MASCULINO' },
@@ -81,13 +82,7 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
-            if (this.object.status == 1) {
-              this.object.status = true
-            }
-
-            else {
-              this.object.status = false
-            }
+            this.object.status ? this.object.status = 1 : this.object.status = 0
           })
           .catch((err) => {
             console.error(err)
@@ -105,16 +100,16 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = 1 : this.object.status = 0
+          this.object.status ? this.object.status = true : this.object.status = false
 
           const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
+            if (result.status == 204 && result.status == 200) {
+              this.$store.dispatch('setShowToast', true)
+              this.$store.dispatch('setToastMessage', 'Usuário alterado com sucesso !')
+              this.$router.back()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
@@ -138,6 +133,8 @@ export default {
           const newObj = { ...this.object }
           delete newObj.file
 
+          newObj.status ? newObj.status = true : newObj.status = false
+
           const result = await update(this.route, newObj)
 
           if (result.status && (result.status == 204 || result.status == 200)) {
@@ -152,8 +149,7 @@ export default {
         }
 
         else {
-
-          this.object.usuario.id = idAluno
+          console.log(this.object)
           const result = await insert(this.route, this.object)
 
           if (result.status) {
@@ -164,13 +160,13 @@ export default {
 
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
               this.object = {}
             }
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors
             this.modalError.show()
           }
         }
@@ -181,13 +177,14 @@ export default {
     logout() { logout(this) },
 
     handleSelectedFile(file) {
+      console.log("ENTROU")
       this.object.file = file;
       const reader = new FileReader();
 
       if (file) {
         reader.onload = (event) => {
           const base64String = event.target.result.split(',')[1]
-          this.object.arqAvaliacao = base64String;
+          this.object.urlAvatar = base64String;
         }
       }
 

@@ -13,11 +13,11 @@
             label="Nome Aluno" placeholder="" />
           <s-select v-model="object.cdTreino" divClass="col-md-1" label="Treino" :items="treinos" :clearable="false"
             required />
-          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
+          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" l-abel="Série" placeholder="" required />
           <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
             required />
           <s-input-text v-model="object.peso" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />
-          <s-input-text v-model="object.descanso" ref="intervalo" divClass="col-md-2" label="Intervalo" placeholder=""
+          <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##'" divClass="col-md-2" label="Intervalo" placeholder=""
             required />
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-input-check v-model="object.alternativo" divClass="col-md-2 mt-3" label="Alternativo" />
@@ -64,13 +64,12 @@ export default {
 
     idExercicio: null,
     descricaoExercicio: "",
-
     idAluno: null,
     nomeAluno: "",
 
     status: [
-      { label: "Ativo", value: 'true' },
-      { label: "Inativo", value: 'false' },
+      { label: "Ativo", value: 1 },
+      { label: "Inativo", value: 0 },
     ],
 
     treinos: [
@@ -87,6 +86,11 @@ export default {
         await getById(this.route, id)
           .then((res) => {
             this.object = res
+            this.object.status ? this.object.status = 1 : this.object.status = 0
+            this.idExercicio = res.exercicio.id
+            this.descricaoExercicio = res.exercicio.descricao
+            this.idUsuario = res.usuario.id
+            this.nomeAluno = res.usuario.nome
           })
           .catch((err) => {
             this.$router.push({ name: 'treino' })
@@ -131,28 +135,23 @@ export default {
 
     async save() {
       if (await this.$checkSession()) {
-        this.object.status ? this.object.status = 1 : this.object.status = 0
-
         if (this.object.id) {
-          const newObj = {
-            id: this.object.id,
-            descricao: this.object.descricao,
-            status: this.object.status,
-          }
-          
+          this.object.exercicio.id = this.idExercicio
+          this.object.exercicio.descricao = this.descricaoExercicio
+          this.object.idExercicio = this.idExercicio
+
+          this.object.usuario.id = this.idExercicio
+          this.object.usuario.nome = this.nomeAluno
+          this.object.idUsuario = this.idAluno
+
+          const newObj = { ...this.object }
+
           const result = await update(this.route, this.$route.params.id, newObj)
 
-          if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
-            }
-
-            else {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Treino alterado com sucesso !')
-              this.$router.back()
-            }
+          if (result.status && (result.status == 204 || result.status == 200)) {
+            this.$store.dispatch('setShowToast', true)
+            this.$store.dispatch('setToastMessage', 'Exercício alterado com sucesso !')
+            this.$router.back()
           }
 
           else {
@@ -162,6 +161,9 @@ export default {
         }
 
         else {
+          this.object.idExercicio = this.idExercicio
+          this.object.idUsuario = this.idAluno
+
           const result = await insert(this.route, this.object)
 
           if (result.status) {
@@ -200,6 +202,36 @@ export default {
     const id = this.$route.params.id
     if (id) { await this.loadItem(id) }
   },
+
+  watch: {
+    async idExercicio() {
+      await getById("exercicio", this.idExercicio)
+        .then((res) => {
+          this.descricaoExercicio = res.descricao
+        })
+        .catch((err) => {
+          console.log(err.erros)
+          this.modalBody = `Exercício ${this.idExercicio} não foi encontrado`
+          this.modalError.show()
+        })
+
+      this.idAparelho
+    },
+    async idAluno() {
+      await getById("usuario", this.idAluno)
+        .then((res) => {
+          this.nomeAluno = res.nome
+        })
+        .catch((err) => {
+          console.log(err.erros)
+          this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+          this.modalError.show()
+        })
+
+      this.idAluno
+    }
+  }
+
 }
 </script>
   

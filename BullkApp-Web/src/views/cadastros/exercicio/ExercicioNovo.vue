@@ -109,20 +109,29 @@ export default {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
           this.object.status ? this.object.status = true : this.object.status = false
+          
+          this.object.aparelho.id = this.idAparelho
+          this.object.aparelho.descricao = this.descricaoAparelho
+          this.object.idAparelho = this.idAparelho
 
           const newObj = { ...this.object }
+          delete newObj.file
+          
           newObj.status ? newObj.status = true : newObj.status = false
+
+          console.log(newObj)
 
           const result = await insert(this.route, newObj)
 
           if (result.status) {
-            if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
-              this.modalError.show()
+            if (result.status == 204 && result.status == 200) {
+              this.$store.dispatch('setShowToast', true)
+              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
+              this.$router.back()
             }
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Exercício criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criado com sucesso !')
               this.object = {}
             }
           }
@@ -145,8 +154,6 @@ export default {
 
           const newObj = { ...this.object }
           delete newObj.file
-
-          console.log("NEWOBJETO: ", newObj)
 
           newObj.status ? newObj.status = true : newObj.status = false
 
@@ -181,7 +188,7 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors
             this.modalError.show()
           }
         }
@@ -225,7 +232,7 @@ export default {
         })
         .catch((err) => {
           console.log(err.erros)
-          this.modalBody = `Aparelho ${this.object.idAparelho} não foi encontrado`
+          this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
           this.modalError.show()
         })
 
