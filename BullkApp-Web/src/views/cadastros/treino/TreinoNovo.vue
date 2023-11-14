@@ -13,7 +13,7 @@
             label="Nome Aluno" placeholder="" />
           <s-select v-model="object.cdTreino" divClass="col-md-1" label="Treino" :items="treinos" :clearable="false"
             required />
-          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" l-abel="Série" placeholder="" required />
+          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
           <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
             required />
           <s-input-text v-model="object.peso" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />

@@ -69,9 +69,9 @@ export default {
   data: () => ({
     route: 'treino',
     headers: [
+      { title: 'Treino', field: 'treino' },
       { title: 'Exercício', field: 'exercicio' },
       { title: 'Aluno', field: 'aluno' },
-      { title: 'Treino', field: 'treino' },
       { title: 'Séries', field: 'series' },
       { title: 'Repetições', field: 'repeticoes' },
       { title: 'Intervalo/Descanso', field: 'descanso' },
@@ -91,41 +91,43 @@ export default {
     actualPage: 1,
     limit: 10,
 
-    // filterObject: [
-    //   {
-    //     label: 'Nome',
-    //     ref: 'usuarName',
-    //     route: 'aparelho',
-    //     subRoute: 'byIdUser',
-    //     param: 'idUser',
-    //     type: 'text',
-    //     signal: '=',
-    //     operator: 'LIKE',
-    //     index: 1
-    //   },
-    //   /*{
-    //     label: 'Gênero',
-    //     ref: 'bookGender',
-    //     route: 'book',
-    //     subRoute: 'by-gender',
-    //     param: 'gender',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 2
-    //   },
-    //   {
-    //     label: 'Autor',
-    //     ref: 'bookAuthor',
-    //     route: 'book',
-    //     subRoute: 'by-author',
-    //     param: 'author',
-    //     type: 'text',
-    //     signal: '',
-    //     operator: 'LIKE',
-    //     index: 3
-    //   },*/
-    // ],
+    filterObject: [
+      {
+        label: 'Treino',
+        ref: 'codTreino',
+        route: 'treino/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'codigo_treino',
+        type: 'text',
+        signal: '',
+        operator: '',
+        index: 1
+      },
+      {
+        label: 'Exercício',
+        ref: 'exercicioName',
+        route: 'treino/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'exercicio',
+        type: 'text',
+        signal: '',
+        operator: '',
+        index: 2
+      },
+      {
+        label: 'Autor',
+        ref: 'autorName',
+        route: 'book',
+        subRoute: 'by-author',
+        param: 'author',
+        type: 'text',
+        signal: '',
+        operator: 'LIKE',
+        index: 3
+      },
+    ],
 
     filterOption: 1,
     filterParam: null,
@@ -133,7 +135,7 @@ export default {
 
   methods: {
     async loadItems(page = 1) {
-      /*if (await this.$checkSession()) {
+      if (await this.$checkSession()) {
         const query = { params: { page: page, limit: this.limit } }
         let raw = []
         if (this.filterParam) {
@@ -141,18 +143,13 @@ export default {
           this.filterParam.params.limit = this.limit
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get(this.route, query)
+          raw = await get('treino/pages/', query)
         }
-        this.items = raw
-          this.pages = Math.ceil(raw.total / this.limit)
+        this.items = raw.data
+        this.pages = Math.ceil(raw.total / this.limit)
       } else {
-       this.modalNotLogged.show()
-      } */
-
-      let raw = []
-      raw = await get(this.$route.name, {})
-      this.items = raw
-
+        this.modalNotLogged.show()
+      }
     },
 
     async edit(id) {
@@ -205,7 +202,7 @@ export default {
     changeHeaders() {
       if (this.filterOption == 1) {
         this.headers = [
-          { title: 'Nome', field: 'name' },
+          { title: 'Exercício', field: 'exer' },
           { title: 'Gênero', field: 'gender' },
           { title: 'Autor', field: 'author' },
           { title: 'Páginas', field: 'quantityPages' },
