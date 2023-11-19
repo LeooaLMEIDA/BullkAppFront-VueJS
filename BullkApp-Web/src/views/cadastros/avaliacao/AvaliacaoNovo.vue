@@ -6,7 +6,7 @@
         <div class="row">
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="10" divClass="col-md-6" label="Descrição"
             required />
-          <s-input-text v-model="idAluno" ref="idAluno" maxlength="40" divClass="col-md-2" label="Aluno" placeholder=""
+          <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder=""
             required />
           <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
             label="Nome Aluno" placeholder="" />

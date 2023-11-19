@@ -16,7 +16,7 @@
             placeholder="Celular" v-mask="'(##) #####-####'" required />
           <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
             required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" required />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
             label="Imagem" :acceptedTypes="['.png']" required />
         </div>

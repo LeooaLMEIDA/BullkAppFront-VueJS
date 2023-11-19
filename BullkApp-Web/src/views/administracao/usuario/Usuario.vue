@@ -1,6 +1,6 @@
 <template>
   <div class="m-3">
-    <div class="row">
+    <div class="row" v-if="!zoom">
       <div class="col-8">
         <s-title title="Usuários" :breadcrumb="true" />
       </div>
@@ -12,7 +12,9 @@
         <div class="col-12">
           <s-table v-model="actualPage" :headers="headers" :items="items" :totalPages="pages" v-if="!loader">
             <template v-slot:id="{ item }">
-              {{ item.id }}
+              <div class="text-center">
+                {{ item.id }}
+              </div>
             </template>
             <template v-slot:descricao="{ item }">
               {{ item.nome }}
@@ -21,13 +23,19 @@
               {{ item.email }}
             </template>
             <template v-slot:sexo="{ item }">
-              {{ item.sexo }}
+              <div class="text-center">
+                {{ item.sexo }}
+              </div>
             </template>
             <template v-slot:dtNascimento="{ item }">
-              {{ formatDate(item.dtNascimento) }}
+              <div class="text-center">
+                {{ formatDate(item.dtNascimento) }}
+              </div>
             </template>
             <template v-slot:tpUsuario="{ item }">
-              {{ item.tpUsuario }}
+              <div class="text-center">
+                {{ item.tpUsuario }}
+              </div>
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
@@ -37,17 +45,20 @@
               </div>
             </template>
             <template v-slot:actions="{ item }">
-              <div class="text-center">
+              <div class="text-center" v-if="!zoom">
                 <i class="bi bi-lock-fill text-secondary px-1" style="cursor: pointer"
                   @click="showModalUpdatePassword(item)"></i>
                 <i class="bi bi-pencil-fill text-secondary px-1" style="cursor: pointer" @click="edit(item.id)"></i>
                 <i class="bi bi-trash-fill text-danger px-1" style="cursor: pointer" @click="removeConfirm(item)"></i>
               </div>
+              <div class="text-center" v-if="zoom">
+                <s-button label="Selecionar" color="primary" type="button" @click="emitSelectedItem(item)" />
+              </div>
             </template>
           </s-table>
         </div>
         <div class="col-12" v-if="!loader">
-          <s-button type="button" label="Novo" color="primary" icon="plus-lg"
+          <s-button type="button" v-if="!zoom" label="Novo" color="primary" icon="plus-lg"
             @click="this.$router.push({ name: 'usuarioNew' })" />
         </div>
       </div>
@@ -97,6 +108,14 @@ import { get, remove, update, validateCurrentPassword, search } from '@/crud.js'
 
 export default {
   name: 'usuario',
+
+  props: {
+    zoom: {
+      type: Boolean,
+      default: false,
+    },
+    valueZoom: String,
+  },
 
   data: () => ({
     route: 'usuario',
@@ -236,6 +255,10 @@ export default {
     removeConfirm(item) {
       this.choosed = item
       this.modalDelete.show()
+    },
+
+    emitSelectedItem(item) {
+      this.$emit("selectedItem", item)
     },
 
     getStatusColor(status) {

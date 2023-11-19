@@ -42,7 +42,7 @@
 
 <script>
 import { logout } from '@/rule/functions.js'
-import { get, remove } from '@/crud.js'
+import { get, remove, search } from '@/crud.js'
 
 export default {
   name: 'avaliacao',
@@ -67,39 +67,18 @@ export default {
     limit: 10,
 
     filterObject: [
-      /*{
-        label: 'Nome',
-        ref: 'usuarName',
-        route: 'aparelho',
-        subRoute: 'byIdUser',
-        param: 'idUser',
+      {
+        label: 'Descrição',
+        ref: 'descAvaliacao',
+        route: 'avaliacao/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'descricao',
         type: 'text',
-        signal: '=',
-        operator: 'LIKE',
+        signal: '',
+        operator: '',
         index: 1
-      },
-      {
-        label: 'Gênero',
-        ref: 'bookGender',
-        route: 'book',
-        subRoute: 'by-gender',
-        param: 'gender',
-        type: 'text',
-        signal: '',
-        operator: 'LIKE',
-        index: 2
-      },
-      {
-        label: 'Autor',
-        ref: 'bookAuthor',
-        route: 'book',
-        subRoute: 'by-author',
-        param: 'author',
-        type: 'text',
-        signal: '',
-        operator: 'LIKE',
-        index: 3
-      },*/
+      }
     ],
 
     filterOption: 1,
@@ -175,12 +154,9 @@ export default {
     changeHeaders() {
       if (this.filterOption == 1) {
         this.headers = [
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
-          { title: 'Ações', field: 'actions' },
+          { title: 'Descrição', field: 'descricao' },
+          { title: 'Observação', field: 'observacao' },
+          { title: 'Ações', field: 'actions' }
         ]
       }
     },

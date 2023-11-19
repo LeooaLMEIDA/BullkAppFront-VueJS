@@ -21,16 +21,24 @@
               {{ item.usuario.nome }}
             </template>
             <template v-slot:series="{ item }">
-              {{ item.series }}
+              <div class="text-center">
+                {{ item.series }}
+              </div>
             </template>
             <template v-slot:repeticoes="{ item }">
-              {{ item.repeticoes }}
+              <div class="text-center">
+                {{ item.repeticoes }}
+              </div>
             </template>
             <template v-slot:descanso="{ item }">
-              {{ item.descanso }}
+              <div class="text-center">
+                {{ item.descanso }}
+              </div>
             </template>
             <template v-slot:peso="{ item }">
-              {{ item.peso }}
+              <div class="text-center">
+                {{ item.peso }}
+              </div>
             </template>
             <template v-slot:status="{ item }">
               <div class="text-center">
@@ -117,16 +125,31 @@ export default {
         index: 2
       },
       {
-        label: 'Autor',
+        label: 'Aluno',
         ref: 'autorName',
-        route: 'book',
-        subRoute: 'by-author',
-        param: 'author',
+        route: 'treino/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'usuario',
         type: 'text',
         signal: '',
         operator: 'LIKE',
         index: 3
       },
+      {
+        label: 'Status',
+        ref: 'aparelhoStatus',
+        route: 'treino/pages/filter/bool',
+        subRoute: '',
+        param: 'value',
+        column: 'status',
+        type: 'select',
+        items: [
+          { label: 'Ativo', value: 'true' },
+          { label: 'Inativo', value: 'false' }
+        ],
+        index: 4
+      }
     ],
 
     filterOption: 1,
@@ -202,11 +225,53 @@ export default {
     changeHeaders() {
       if (this.filterOption == 1) {
         this.headers = [
-          { title: 'Exercício', field: 'exer' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Treino', field: 'treino' },
+          { title: 'Exercício', field: 'exercicio' },
+          { title: 'Aluno', field: 'aluno' },
+          { title: 'Séries', field: 'series' },
+          { title: 'Repetições', field: 'repeticoes' },
+          { title: 'Intervalo/Descanso', field: 'descanso' },
+          { title: 'Peso', field: 'peso' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 2) {
+        this.headers = [
+          { title: 'Exercício', field: 'exercicio' },
+          { title: 'Treino', field: 'treino' },
+          { title: 'Aluno', field: 'aluno' },
+          { title: 'Séries', field: 'series' },
+          { title: 'Repetições', field: 'repeticoes' },
+          { title: 'Intervalo/Descanso', field: 'descanso' },
+          { title: 'Peso', field: 'peso' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 3) {
+        this.headers = [
+          { title: 'Aluno', field: 'aluno' },
+          { title: 'Exercício', field: 'exercicio' },
+          { title: 'Treino', field: 'treino' },
+          { title: 'Séries', field: 'series' },
+          { title: 'Repetições', field: 'repeticoes' },
+          { title: 'Intervalo/Descanso', field: 'descanso' },
+          { title: 'Peso', field: 'peso' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 4) {
+        this.headers = [
+          { title: 'Status', field: 'status' },
+          { title: 'Aluno', field: 'aluno' },
+          { title: 'Exercício', field: 'exercicio' },
+          { title: 'Treino', field: 'treino' },
+          { title: 'Séries', field: 'series' },
+          { title: 'Repetições', field: 'repeticoes' },
+          { title: 'Intervalo/Descanso', field: 'descanso' },
+          { title: 'Peso', field: 'peso' },
           { title: 'Ações', field: 'actions' },
         ]
       }

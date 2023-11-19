@@ -1,6 +1,6 @@
 <template>
   <div class="m-3">
-    <div class="row">
+    <div class="row" v-if="!zoom">
       <div class="col-8">
         <s-title title="Aparelhos" :breadcrumb="true" />
       </div>
@@ -22,15 +22,18 @@
               </div>
             </template>
             <template v-slot:actions="{ item }">
-              <div class="text-center">
+              <div class="text-center" v-if="!zoom">
                 <i class="bi bi-pencil-fill text-secondary px-1" style="cursor: pointer" @click="edit(item.id)"></i>
                 <i class="bi bi-trash-fill text-danger px-1" style="cursor: pointer" @click="removeConfirm(item)"></i>
+              </div>
+              <div class="text-center" v-if="zoom">
+                <s-button label="Selecionar" color="primary" type="button" @click="emitSelectedItem(item)" />
               </div>
             </template>
           </s-table>
         </div>
         <div class="col-12" v-if="!loader">
-          <s-button type="button" label="Novo" color="primary" icon="plus-lg"
+          <s-button type="button" v-if="!zoom" label="Novo" color="primary" icon="plus-lg"
             @click="this.$router.push({ name: 'aparelhoNew' })" />
         </div>
       </div>
@@ -47,6 +50,14 @@ import { get, remove, search } from '@/crud.js'
 
 export default {
   name: 'aparelho',
+
+  props: {
+    zoom: {
+      type: Boolean,
+      default: false,
+    },
+    valueZoom: String,
+  },
 
   data: () => ({
     route: 'aparelho',
@@ -70,7 +81,7 @@ export default {
     filterObject: [
       {
         label: 'Nome',
-        ref: 'usuarName',
+        ref: 'aparelhoDesc',
         route: 'aparelho/pages/filter/str',
         subRoute: '',
         param: 'value',
@@ -80,28 +91,20 @@ export default {
         operator: '',
         index: 1
       },
-      /*{
-        label: 'Gênero',b
-        ref: 'bookGender',
-        route: 'book',
-        subRoute: 'by-gender',
-        param: 'gender',
-        type: 'text',
-        signal: '',
-        operator: 'LIKE',
-        index: 2
-      },
       {
-        label: 'Autor',
-        ref: 'bookAuthor',
-        route: 'book',
-        subRoute: 'by-author',
-        param: 'author',
-        type: 'text',
-        signal: '',
-        operator: 'LIKE',
-        index: 3
-      },*/
+        label: 'Status',
+        ref: 'aparelhoStatus',
+        route: 'aparelho/pages/filter/bool',
+        subRoute: '',
+        param: 'value',
+        column: 'status',
+        type: 'select',
+        items: [
+          { label: 'Ativo', value: 'true' },
+          { label: 'Inativo', value: 'false' }
+        ],
+        index: 2
+      }
     ],
 
     filterOption: 1,
@@ -126,6 +129,7 @@ export default {
         this.modalNotLogged.show()
       }
     },
+
 
     async edit(id) {
       const route = {
@@ -153,6 +157,10 @@ export default {
       this.modalDelete.show()
     },
 
+    emitSelectedItem(item) {
+      this.$emit("selectedItem", item)
+    },
+
     getStatusColor(status) {
       return status == 1 ? "bg-success" : "bg-danger";
     },
@@ -177,11 +185,15 @@ export default {
     changeHeaders() {
       if (this.filterOption == 1) {
         this.headers = [
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Descrição', field: 'descricao' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 2) {
+        this.headers = [
+          { title: 'Status', field: 'status' },
+          { title: 'Descrição', field: 'descricao' },
           { title: 'Ações', field: 'actions' },
         ]
       }

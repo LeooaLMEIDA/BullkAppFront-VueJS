@@ -6,11 +6,17 @@
         <div class="row">
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-5" label="Descrição"
             placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false"
+            required />
           <s-select v-model="object.grpMusculos" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
-            :clearable="false" />
-          <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
-            placeholder="" required />
+            :clearable="false" required />
+          <!-- <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
+            placeholder="" required /> -->
+          <s-input-zoom v-model="idAparelho" ref="idAparelho" divClass="col-12 col-md-2" label="Aparelho">
+            <template #default>
+              <Aparelho :zoom="true" @selectedItem="handleSelectedAparelho" />
+            </template>
+          </s-input-zoom>
           <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10" isDisabled
             label="Descrição Aparelho" placeholder="" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
@@ -42,11 +48,16 @@
 </template>
   
 <script>
+import Aparelho from '@/views/cadastros/aparelho/Aparelho.vue'
 import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
   name: 'exercicioNew',
+
+  components: {
+    Aparelho
+  },
 
   data: () => ({
     object: {
@@ -109,14 +120,14 @@ export default {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
           this.object.status ? this.object.status = true : this.object.status = false
-          
+
           this.object.aparelho.id = this.idAparelho
           this.object.aparelho.descricao = this.descricaoAparelho
           this.object.idAparelho = this.idAparelho
 
           const newObj = { ...this.object }
           delete newObj.file
-          
+
           newObj.status ? newObj.status = true : newObj.status = false
 
           console.log(newObj)
@@ -176,7 +187,7 @@ export default {
 
           if (result.status) {
             if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
+              this.modalBody = result.response.data[0]
               this.modalError.show()
             }
 
@@ -188,12 +199,17 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data.errors
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
       }
       else { this.modalNotLogged.show() }
+    },
+
+    handleSelectedAparelho(item) {
+      this.$refs.idAparelho.modalZoom.hide()
+      this.idAparelho = item.id.toString()
     },
 
     logout() { logout(this) },

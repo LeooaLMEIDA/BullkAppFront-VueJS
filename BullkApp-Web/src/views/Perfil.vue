@@ -2,67 +2,41 @@
   <div class="m-3">
     <div class="row">
       <div class="col-8">
-        <s-title title="Meu Perfil" :breadcrumb="true"/>
+        <s-title title="Meu Perfil" :breadcrumb="true" />
       </div>
     </div>
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
           <div class="col-6">
-            <s-input-text
-              v-model="object.name"
-              ref="myName"
-              label="Nome"
-              required
-            />
+            <s-input-text v-model="object.name" ref="myName" label="Nome" required />
           </div>
           <div class="col-6">
-            <s-input-email
-              v-model="object.email"
-              ref="myEmail"
-              label="E-mail"
-              :isDisabled="true"
-            />
+            <s-input-email v-model="object.email" ref="myEmail" label="E-mail" :isDisabled="true" />
           </div>
         </div>
-        <hr class="border border-1"/>
-      <div class="row">
-        <div class="col-12 d-flex justify-content-between">
-          <div>
-            <s-button
-              type="submit"
-              color="primary"
-              label="Salvar"
-              icon="check2"
-            />
-            <s-button
-              type="button"
-              color="primary"
-              label="Alterar senha"
-              icon="bi bi-lock-fill"
-              @click="showModalUpdatePassword()"
-            />
-          </div>
-          <div>
-            <!-- <s-button
+        <hr class="border border-1" />
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between">
+            <div>
+              <s-button type="submit" color="primary" label="Salvar" icon="check2" />
+              <s-button type="button" color="primary" label="Alterar senha" icon="bi bi-lock-fill"
+                @click="showModalUpdatePassword()" />
+            </div>
+            <div>
+              <!-- <s-button
               type="button"
               label="Cancelar"
               color="outline-danger"
               icon="x-lg"
               @click="$router.back"
             /> -->
+            </div>
           </div>
         </div>
-      </div>
       </form>
-      <div
-        class="modal fade"
-        ref="modalUpdatePassword"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-hidden="true"
-      >
+      <div class="modal fade" ref="modalUpdatePassword" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true">
         <form ref="form" @submit.prevent="submitFormPassword">
           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -72,30 +46,12 @@
               <div class="modal-body text-dark">
                 <div class="row">
                   <div class="col-12">
-                    <s-input-password
-                      v-model="currenntPassword"
-                      ref="currenntPassword"
-                      divClass="col-12"
-                      label="Senha Atual"
-                      placeholder="••••••••"
-                      required
-                    />
-                    <s-input-password
-                      v-model="object.password"
-                      ref="password"
-                      divClass="col-12"
-                      label="Nova Senha"
-                      placeholder="••••••••"
-                      required
-                    />
-                    <s-input-password
-                      v-model="passwordConfirm"
-                      ref="passwordConfirm"
-                      divClass="col-12"
-                      label="Confirmação Nova Senha"
-                      placeholder="••••••••"
-                      required
-                    />
+                    <s-input-password v-model="currenntPassword" ref="currenntPassword" divClass="col-12"
+                      label="Senha Atual" placeholder="••••••••" required />
+                    <s-input-password v-model="object.password" ref="password" divClass="col-12" label="Nova Senha"
+                      placeholder="••••••••" required />
+                    <s-input-password v-model="passwordConfirm" ref="passwordConfirm" divClass="col-12"
+                      label="Confirmação Nova Senha" placeholder="••••••••" required />
                     <div class="row">
                       <s-label-required />
                     </div>
@@ -103,35 +59,17 @@
                 </div>
               </div>
               <div class="modal-footer d-flex justify-content-between">
-                <s-button
-                  type="submit"
-                  label="Alterar"
-                  color="primary"
-                  icon="check2"
-                />
-                <s-button
-                  type="button"
-                  label="Cancelar"
-                  color="outline-danger"
-                  icon="x-lg"
-                  data-bs-dismiss="modal"
-                  @click="clearData"
-                />
+                <s-button type="submit" label="Alterar" color="primary" icon="check2" />
+                <s-button type="button" label="Cancelar" color="outline-danger" icon="x-lg" data-bs-dismiss="modal"
+                  @click="clearData" />
               </div>
             </div>
           </div>
         </form>
       </div>
     </div>
-    <s-modal-error
-      ref="modalError"
-      modalTitle="Falha ao alterar perfil !"
-      :modalBody="modalBody"
-    />
-    <s-modal-notlogged
-      ref="modalNotLogged"
-      @confirm="logout"
-    />
+    <s-modal-error ref="modalError" modalTitle="Falha ao alterar perfil !" :modalBody="modalBody" />
+    <s-modal-notlogged ref="modalNotLogged" @confirm="logout" />
   </div>
 </template>
 
@@ -141,10 +79,10 @@ import { validateForm, logout } from '@/rule/functions.js'
 import { getById, update, validateCurrentPassword, get } from '@/crud.js'
 
 export default {
-  name: 'MyProfile',
+  name: 'profile',
 
   data: () => ({
-    route: 'user',
+    route: 'usuario',
 
     headers: ['Nome', 'E-mail', 'Status', 'Ações'],
     object: {},
@@ -158,27 +96,27 @@ export default {
   }),
 
   computed: {
-    ...mapState(['user']),
+    ...mapState(['usuario']),
   },
 
   methods: {
     async loadItem() {
       if (await this.$checkSession()) {
         await getById(this.route, this.user.id)
-        .then((res) => {
-          this.object = res
-          if (this.object.status == 1) {
-            this.object.status = true
-          }
+          .then((res) => {
+            this.object = res
+            if (this.object.status == 1) {
+              this.object.status = true
+            }
 
-          else {
-            this.object.status = false
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          this.$router.push({ name: "myProfile" })
-        })
+            else {
+              this.object.status = false
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            this.$router.push({ name: "usuario" })
+          })
       }
 
       else { this.modalNotLogged.show() }
@@ -302,7 +240,7 @@ export default {
   },
 
   async created() {
-     await this.loadItem(this.user.id)
+    await this.loadItem(this.user.id)
   },
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="m-3">
-    <div class="row">
+    <div class="row" v-if="!zoom">
       <div class="col-8">
         <s-title title="Exercícios" :breadcrumb="true" />
       </div>
@@ -28,15 +28,18 @@
               </div>
             </template>
             <template v-slot:actions="{ item }">
-              <div class="text-center">
+              <div class="text-center" v-if="!zoom">
                 <i class="bi bi-pencil-fill text-secondary px-1" style="cursor: pointer" @click="edit(item.id)"></i>
                 <i class="bi bi-trash-fill text-danger px-1" style="cursor: pointer" @click="removeConfirm(item)"></i>
+              </div>
+              <div class="text-center" v-if="zoom">
+                <s-button label="Selecionar" color="primary" type="button" @click="emitSelectedItem(item)" />
               </div>
             </template>
           </s-table>
         </div>
         <div class="col-12" v-if="!loader">
-          <s-button type="button" label="Novo" color="primary" icon="plus-lg"
+          <s-button type="button" v-if="!zoom" label="Novo" color="primary" icon="plus-lg"
             @click="this.$router.push({ name: 'exercicioNew' })" />
         </div>
       </div>
@@ -53,6 +56,14 @@ import { get, remove, update, search } from '@/crud.js'
 
 export default {
   name: 'exercicio',
+
+  props: {
+    zoom: {
+      type: Boolean,
+      default: false,
+    },
+    valueZoom: String,
+  },
 
   data: () => ({
     route: 'exercicio',
@@ -88,19 +99,20 @@ export default {
         operator: '',
         index: 1
       },
-      /*{
-        label: 'Gênero',
-        ref: 'bookGender',
-        route: 'book',
-        subRoute: 'by-gender',
-        param: 'gender',
+      {
+        label: 'Aparelho',
+        ref: 'descAparelho',
+        route: 'exercicio/pages/filter/str',
+        subRoute: '',
+        param: 'value',
+        column: 'aparelho',
         type: 'text',
         signal: '',
-        operator: 'LIKE',
+        operator: '',
         index: 2
       },
       {
-        label: 'Autor',
+        label: 'Grupo Musculos',
         ref: 'bookAuthor',
         route: 'book',
         subRoute: 'by-author',
@@ -109,7 +121,7 @@ export default {
         signal: '',
         operator: 'LIKE',
         index: 3
-      },*/
+      },
     ],
 
     filterOption: 1,
@@ -161,6 +173,10 @@ export default {
       this.modalDelete.show()
     },
 
+    emitSelectedItem(item) {
+      this.$emit("selectedItem", item)
+    },
+
     getStatusColor(status) {
       return status == 1 ? "bg-success" : "bg-danger";
     },
@@ -185,11 +201,28 @@ export default {
     changeHeaders() {
       if (this.filterOption == 1) {
         this.headers = [
-          { title: 'Nome', field: 'name' },
-          { title: 'Gênero', field: 'gender' },
-          { title: 'Autor', field: 'author' },
-          { title: 'Páginas', field: 'quantityPages' },
-          { title: 'Data Aquisição', field: 'dateAcquisition' },
+          { title: 'Descrição', field: 'descricao' },
+          { title: 'Grupo Musculos', field: 'grpMusculos' },
+          { title: 'Aparelho', field: 'aparelho' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 2) {
+        this.headers = [
+          { title: 'Aparelho', field: 'aparelho' },
+          { title: 'Descrição', field: 'descricao' },
+          { title: 'Grupo Musculos', field: 'grpMusculos' },
+          { title: 'Status', field: 'status' },
+          { title: 'Ações', field: 'actions' },
+        ]
+      }
+      else if (this.filterOption == 3) {
+        this.headers = [
+          { title: 'Grupo Musculos', field: 'grpMusculos' },
+          { title: 'Descrição', field: 'descricao' },
+          { title: 'Aparelho', field: 'aparelho' },
+          { title: 'Status', field: 'status' },
           { title: 'Ações', field: 'actions' },
         ]
       }
@@ -213,7 +246,7 @@ export default {
       this.changeHeaders()
     },
     actualPage() {
-        this.loadItems(this.actualPage)
+      this.loadItems(this.actualPage)
     },
   },
 }

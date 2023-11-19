@@ -4,11 +4,21 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="idExercicio" ref="idExercicio" divClass="col-md-2" label="Exercício" placeholder=""
-            required />
+          <!-- <s-input-text v-model="idExercicio" ref="idExercicio" divClass="col-md-2" label="Exercício" placeholder=""
+            required /> -->
+          <s-input-zoom v-model="idExercicio" ref="idExercicio" divClass="col-12 col-md-2" label="Exercício" required>
+            <template #default>
+              <Exercicio :zoom="true" @selectedItem="handleSelectedExercicio" />
+            </template>
+          </s-input-zoom>
           <s-input-text v-model="descricaoExercicio" ref="descricaoExercicio" maxlength="40" divClass="col-md-4"
             isDisabled label="Descrição Exercício" placeholder="" />
-          <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder="" required />
+          <!-- <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder="" required /> -->
+          <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
+            <template #default>
+              <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
+            </template>
+          </s-input-zoom>
           <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
             label="Nome Aluno" placeholder="" />
           <s-select v-model="object.cdTreino" divClass="col-md-1" label="Treino" :items="treinos" :clearable="false"
@@ -17,9 +27,9 @@
           <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
             required />
           <s-input-text v-model="object.peso" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />
-          <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##'" divClass="col-md-2" label="Intervalo" placeholder=""
-            required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
+          <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##:##'" divClass="col-md-2"
+            label="Intervalo" placeholder="" required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" required/>
           <s-input-check v-model="object.alternativo" divClass="col-md-2 mt-3" label="Alternativo" />
         </div>
         <div class="row">
@@ -46,11 +56,19 @@
 </template>
   
 <script>
+
+import Exercicio from '@/views/cadastros/exercicio/Exercicio.vue'
+import Usuario from '@/views/administracao/usuario/Usuario.vue'
 import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
   name: 'treinoNew',
+  
+  components: {
+    Exercicio,
+    Usuario
+  },
 
   data: () => ({
     object: {},
@@ -187,6 +205,16 @@ export default {
       }
 
       else { this.modalNotLogged.show() }
+    },
+
+    handleSelectedExercicio(item) {
+      this.$refs.idExercicio.modalZoom.hide()
+      this.idExercicio = item.id.toString()
+    },
+
+    handleSelectedAluno(item) {
+      this.$refs.idAluno.modalZoom.hide()
+      this.idAluno = item.id.toString()
     },
 
     logout() { logout(this) }
