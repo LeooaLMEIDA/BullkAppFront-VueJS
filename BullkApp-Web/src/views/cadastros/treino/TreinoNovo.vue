@@ -4,8 +4,6 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <!-- <s-input-text v-model="idExercicio" ref="idExercicio" divClass="col-md-2" label="Exercício" placeholder=""
-            required /> -->
           <s-input-zoom v-model="idExercicio" ref="idExercicio" divClass="col-12 col-md-2" label="Exercício" required>
             <template #default>
               <Exercicio :zoom="true" @selectedItem="handleSelectedExercicio" />
@@ -13,7 +11,6 @@
           </s-input-zoom>
           <s-input-text v-model="descricaoExercicio" ref="descricaoExercicio" maxlength="40" divClass="col-md-4"
             isDisabled label="Descrição Exercício" placeholder="" />
-          <!-- <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder="" required /> -->
           <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
             <template #default>
               <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
@@ -23,13 +20,14 @@
             label="Nome Aluno" placeholder="" />
           <s-select v-model="object.cdTreino" divClass="col-md-1" label="Treino" :items="treinos" :clearable="false"
             required />
-          <s-input-text v-model="object.serie" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
+          <s-input-text v-model="object.series" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
           <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
             required />
           <s-input-text v-model="object.peso" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />
           <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##:##'" divClass="col-md-2"
             label="Intervalo" placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" required/>
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false"
+            required />
           <s-input-check v-model="object.alternativo" divClass="col-md-2 mt-3" label="Alternativo" />
         </div>
         <div class="row">
@@ -64,7 +62,7 @@ import { insert, getById, update } from '@/crud'
 
 export default {
   name: 'treinoNew',
-  
+
   components: {
     Exercicio,
     Usuario
@@ -127,14 +125,26 @@ export default {
         if (await validateForm(this.$refs.form)) {
           this.object.status ? this.object.status = 1 : this.object.status = 0
 
-          const result = await insert(this.route, this.object)
+          this.object.usuario.id = this.idAluno
+          this.object.usuario.nome = this.nomeAluno
+          this.object.idUsuario = this.idAluno
+
+          this.object.exercicio.id = this.idExercicio
+          this.object.exercicio.descricao = this.descricaoExercicio
+          this.object.idExercicio = this.idExercicio
+
+          const newObj = { ...this.object }
+
+          newObj.status ? newObj.status = true : newObj.status = false
+
+          const result = await insert(this.route, newObj)
 
           if (result.status) {
-            if (result.status != '204') {
-              this.modalBody = result.response.data
-              this.modalError.show()
+            if (result.status == 204 && result.status == 200) {
+              this.$store.dispatch('setShowToast', true)
+              this.$store.dispatch('setToastMessage', 'Treino alterado com sucesso !')
+              this.$router.back()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
@@ -154,24 +164,23 @@ export default {
     async save() {
       if (await this.$checkSession()) {
         if (this.object.id) {
+          this.object.usuario.id = this.idAluno
+          this.object.usuario.nome = this.nomeAluno
+          this.object.idUsuario = this.idAluno
+
           this.object.exercicio.id = this.idExercicio
           this.object.exercicio.descricao = this.descricaoExercicio
           this.object.idExercicio = this.idExercicio
 
-          this.object.usuario.id = this.idExercicio
-          this.object.usuario.nome = this.nomeAluno
-          this.object.idUsuario = this.idAluno
-
           const newObj = { ...this.object }
 
-          const result = await update(this.route, this.$route.params.id, newObj)
+          const result = await update(this.route, newObj)
 
           if (result.status && (result.status == 204 || result.status == 200)) {
             this.$store.dispatch('setShowToast', true)
             this.$store.dispatch('setToastMessage', 'Exercício alterado com sucesso !')
             this.$router.back()
           }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()

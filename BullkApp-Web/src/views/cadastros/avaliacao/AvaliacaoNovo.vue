@@ -6,8 +6,13 @@
         <div class="row">
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="10" divClass="col-md-6" label="Descrição"
             required />
-          <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder=""
-            required />
+          <!-- <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder=""
+            required /> -->
+          <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
+            <template #default>
+              <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
+            </template>
+          </s-input-zoom>
           <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
             label="Nome Aluno" placeholder="" />
           <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
@@ -39,11 +44,17 @@
 </template>
   
 <script>
+
+import Usuario from '@/views/administracao/usuario/Usuario.vue'
 import { validateForm } from '@/rule/functions'
 import { insert, getById, update } from '@/crud'
 
 export default {
   name: 'avaliacoesNew',
+
+  components: {
+    Usuario
+  },
 
   data: () => ({
     object: {
@@ -182,7 +193,12 @@ export default {
       }
 
       reader.readAsDataURL(file);
-    }
+    },
+
+    handleSelectedAluno(item) {
+      this.$refs.idAluno.modalZoom.hide()
+      this.idAluno = item.id.toString()
+    },
   },
 
   mounted() {

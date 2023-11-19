@@ -12,7 +12,7 @@
             :clearable="false" required />
           <!-- <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
             placeholder="" required /> -->
-          <s-input-zoom v-model="idAparelho" ref="idAparelho" divClass="col-12 col-md-2" label="Aparelho">
+          <s-input-zoom v-model="idAparelho" ref="idAparelho" divClass="col-12 col-md-2" label="Aparelho" required>
             <template #default>
               <Aparelho :zoom="true" @selectedItem="handleSelectedAparelho" />
             </template>
@@ -130,8 +130,6 @@ export default {
 
           newObj.status ? newObj.status = true : newObj.status = false
 
-          console.log(newObj)
-
           const result = await insert(this.route, newObj)
 
           if (result.status) {
@@ -142,7 +140,7 @@ export default {
             }
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.object = {}
             }
           }

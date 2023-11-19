@@ -149,7 +149,6 @@ export default {
         }
 
         else {
-          console.log(this.object)
           const result = await insert(this.route, this.object)
 
           if (result.status) {
@@ -177,7 +176,6 @@ export default {
     logout() { logout(this) },
 
     handleSelectedFile(file) {
-      console.log("ENTROU")
       this.object.file = file;
       const reader = new FileReader();
 
