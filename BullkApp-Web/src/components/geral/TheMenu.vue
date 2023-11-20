@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-primary d-flex justify-content-between" v-if="logged">
     <div>
-      <i class="bi bi-list icon_action ps-3" @click="toggleSidebar"></i>
+      <i class="bi bi-list icon_action ps-3" style="filter: grayscale(0) brightness(100)" @click="toggleSidebar"></i>
       <img src="@/assets/Logo4.png" class="ps-3" style="width: 200px;" />
     </div>
     <div>

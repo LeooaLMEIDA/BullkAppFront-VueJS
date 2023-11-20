@@ -3,13 +3,8 @@
     <div class="d-flex flex-column">
       <ul class="nav nav-pills flex-column">
         <li v-for="(menuItem, i) in menuList" :key="i">
-          <a
-            href="#"
-            :class="menuItemClasses(menuItem, menuItem.code)"
-            data-bs-toggle="collapse"
-            :aria-expanded="menuItem.status"
-            @click.prevent="navItemCollapse(i), goTo(menuItem.code)"
-          >
+          <a href="#" :class="menuItemClasses(menuItem, menuItem.code)" data-bs-toggle="collapse"
+            :aria-expanded="menuItem.status" @click.prevent="navItemCollapse(i), goTo(menuItem.code)">
             <i :class="menuItemIcon(menuItem)"></i>
             <span class="sidebar-item-title">{{ menuItem.title }}</span>
             <span class="ms-auto"></span>
@@ -17,11 +12,7 @@
           <div v-if="menuItem.children.length > 0" :class="divSubItemClasses(menuItem)">
             <ul class="btn-toggle-nav list-unstyled fw-normal p-1 ms-3">
               <li v-for="(subItem, j) in menuItem.children" :key="j">
-                <a
-                  href="#"
-                  :class="menuSubItemClasses(subItem.code, subItem.child)"
-                  @click.prevent="goTo(subItem.code)"
-                >
+                <a href="#" :class="menuSubItemClasses(subItem.code, subItem.child)" @click.prevent="goTo(subItem.code)">
                   <i :class="menuSubItemIcon(subItem.code, subItem.child, subItem.icon)"></i>
                   {{ subItem.title }}
                 </a>
@@ -82,8 +73,8 @@ export default {
       let classes = 'item-firstLevel nav-link text-white hstack gap-1 '
 
       if (code === this.route) {
-       this.subMenu = null
-       classes +=  'active'
+        this.subMenu = null
+        classes += 'active'
       } else {
         classes += ''
       }
@@ -102,22 +93,22 @@ export default {
       let classes = 'nav-link text-white hstack gap-3 '
 
       if (code === this.route) {
-       this.subMenu = code
-       classes +=  'subItemActive'
-      } else if(this.route) {
+        this.subMenu = code
+        classes += 'subItemActive'
+      } else if (this.route) {
         if (this.route.includes('New') && (this.route.split('New')[0] == code || this.route.split('New')[0] == child)) {
           this.subMenu = code
-          classes +=  'subItemActive'
+          classes += 'subItemActive'
         }
 
         if (this.route.includes('Update') && (this.route.split('Update')[0] == code || this.route.split('Update')[0] == child)) {
           this.subMenu = code
-          classes +=  'subItemActive'
+          classes += 'subItemActive'
         }
 
         if (this.route.includes('Children') && (this.route.split('Children')[0] == child || this.route.split('Children')[0] == code)) {
           this.subMenu = code
-          classes +=  'subItemActive'
+          classes += 'subItemActive'
         }
       }
       else {
@@ -129,9 +120,9 @@ export default {
 
     menuSubItemIcon(code, child, icon) {
       if (code === this.route) {
-       this.subMenu = code
-       icon = 'bi bi-circle-fill'
-      } else if(this.route) {
+        this.subMenu = code
+        icon = 'bi bi-circle-fill'
+      } else if (this.route) {
         if (this.route.includes('New') && (this.route.split('New')[0] == code || this.route.split('New')[0] == child)) {
           this.subMenu = code
           icon = 'bi bi-circle-fill'
