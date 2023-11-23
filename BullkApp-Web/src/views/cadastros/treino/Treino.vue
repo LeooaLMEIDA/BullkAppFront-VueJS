@@ -166,7 +166,7 @@ export default {
           this.filterParam.params.limit = this.limit
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get('treino/pages/', query)
+          raw = await get('treino/pages', query)
         }
         this.items = raw.data
         this.pages = Math.ceil(raw.total / this.limit)
@@ -294,9 +294,9 @@ export default {
       this.loadItems()
       this.changeHeaders()
     },
-    // actualPage() {
-    //     this.loadItems(this.actualPage)
-    // },
+    actualPage() {
+        this.loadItems(this.actualPage)
+    },
   },
 }
 </script>

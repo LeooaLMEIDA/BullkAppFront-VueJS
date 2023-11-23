@@ -138,7 +138,7 @@ export default {
           this.filterParam.params.limit = this.limit
           raw = await search(this.filterParam.route, this.filterParam.params)
         } else {
-          raw = await get('exercicio/pages/', query)
+          raw = await get('exercicio/pages', query)
         }
         this.items = raw.data
         this.pages = Math.ceil(raw.total / this.limit)
