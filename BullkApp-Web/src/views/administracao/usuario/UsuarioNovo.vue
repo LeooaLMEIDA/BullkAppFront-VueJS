@@ -8,17 +8,17 @@
             placeholder="Nome Completo" required />
           <s-input-email v-model="object.email" ref="email" divClass="col-12 col-md-4 col-xxl-4" label="E-mail"
             placeholder="email@email.com" required />
-          <s-input-password v-if="!object.id" v-model="object.senha" ref="password" divClass="col-12 col-md-2"
-            label="Senha" placeholder="••••••••" required />
+          <s-input-password v-model="object.senha" ref="password" divClass="col-12 col-md-2" label="Senha"
+            placeholder="••••••••" :required="!object.id" />
           <s-select v-model="object.sexo" divClass="col-md-2" label="Sexo" :items="sexos" :clearable="false" required />
           <s-input-date v-model="object.dtNascimento" divClass="col-md-2" label="Nascimento" required />
           <s-input-text v-model="object.celular" ref="celular" divClass="col-12 col-md-2" label="Celular"
             placeholder="Celular" v-mask="'(##) #####-####'" required />
           <s-select v-model="object.tpUsuario" divClass="col-md-2" label="Tipo" :items="tipo" :clearable="false"
             required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" :acceptedTypes="['.png']" required />
+            label="Imagem" :acceptedTypes="['.png']" :required="!object.id" />
         </div>
         <div class="row">
           <s-label-required />
@@ -70,8 +70,8 @@ export default {
       { label: "Aluno", value: 'ALUNO' }
     ],
     status: [
-      { label: "Ativo", value: 'true' },
-      { label: "Inativo", value: 'false' },
+      { label: "Ativo", value: 1 },
+      { label: "Inativo", value: 0 },
     ],
 
   }),
@@ -124,7 +124,7 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data.errors[0]
+            this.modalBody = result.response.data.errors
             this.modalError.show()
           }
         }
@@ -149,7 +149,7 @@ export default {
             this.$router.back()
           }
           else {
-            this.modalBody = result.response.data[0]
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }

@@ -19,7 +19,7 @@
           <s-input-text v-model="descricaoAparelho" ref="descricaoAparelho" maxlength="40" divClass="col-md-10" isDisabled
             label="Descrição Aparelho" placeholder="" />
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
-            label="Imagem" :acceptedTypes="['.gif']" required />
+            label="Imagem" :acceptedTypes="['.gif']" :required="!object.id" />
           <s-input-textarea v-model="object.orientacao" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
             label="Orientação" />
         </div>

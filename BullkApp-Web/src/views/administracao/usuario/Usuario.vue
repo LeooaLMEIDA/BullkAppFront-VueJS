@@ -46,8 +46,8 @@
             </template>
             <template v-slot:actions="{ item }">
               <div class="text-center" v-if="!zoom">
-                <i class="bi bi-lock-fill text-secondary px-1" style="cursor: pointer"
-                  @click="showModalUpdatePassword(item)"></i>
+                <!-- <i class="bi bi-lock-fill text-secondary px-1" style="cursor: pointer"
+                  @click="showModalUpdatePassword(item)"></i> -->
                 <i class="bi bi-pencil-fill text-secondary px-1" style="cursor: pointer" @click="edit(item.id)"></i>
                 <i class="bi bi-trash-fill text-danger px-1" style="cursor: pointer" @click="removeConfirm(item)"></i>
               </div>
@@ -303,6 +303,8 @@ export default {
           const validCurrentUpdateObject = {
             ...this.object
           }
+
+
           delete validateCurrentPassword.urlAvatar
           console.log(validCurrentUpdateObject)
 

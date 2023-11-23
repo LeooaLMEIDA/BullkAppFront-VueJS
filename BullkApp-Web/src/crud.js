@@ -112,7 +112,6 @@ const validateCurrentPassword = async (route, object) => {
   const result = await axios
     .post(url, object)
     .then((res) => {
-      console.log(res)
       return res
     })
     .catch((err) => {
