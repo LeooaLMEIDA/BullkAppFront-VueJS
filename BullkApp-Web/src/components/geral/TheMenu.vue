@@ -107,21 +107,25 @@ export default {
 
   methods: {
     logout() {
-      const url = `${baseApiUrl}/logout`
-      axios.defaults.withCredentials = true
+      // const url = `${baseApiUrl}/logout`;
+      axios.defaults.withCredentials = true;
+      sessionStorage.setItem('userData', '');
 
-      const result = axios
-        .post(url)
-        .then((res) => {
-          this.$store.dispatch('setLogged', false)
-          this.$router.push({ name: 'login' })
-        })
-        .catch((err) => {
-          console.log(err)
-          return err
-        })
+      location.reload();
 
-      return result
+      // this.$router.push({ name: "login" });
+
+      // const result = axios
+      //   .post(url)
+      //   .then((res) => {
+      //     this.$store.dispatch("setLogged", false);
+      //     this.$router.push({ name: "login" });
+      //   })
+      //   .catch((err) => {
+      //     return err;
+      //   });
+
+      // return result;
     },
   },
 }
