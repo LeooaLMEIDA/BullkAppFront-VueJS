@@ -6,8 +6,7 @@
         <div class="row">
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="40" divClass="col-md-5" label="Descrição"
             placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false"
-            required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-select v-model="object.grpMusculos" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
             :clearable="false" required />
           <!-- <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"

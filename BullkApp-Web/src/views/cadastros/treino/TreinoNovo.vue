@@ -23,11 +23,11 @@
           <s-input-text v-model="object.series" ref="serie" divClass="col-md-2" label="Série" placeholder="" required />
           <s-input-text v-model="object.repeticoes" ref="repeticoes" divClass="col-md-2" label="Repetições" placeholder=""
             required />
-          <s-input-text v-model="object.peso" ref="peso" divClass="col-md-1" label="Peso" placeholder="" required />
-          <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##:##'" divClass="col-md-2"
-            label="Intervalo" placeholder="" required />
-          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false"
+          <s-input-text v-model="object.peso" ref="peso" maxlength="4" divClass="col-md-1" label="Peso" placeholder=""
             required />
+          <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##:##'" divClass="col-md-2"
+            label="Intervalo" placeholder="00:00:30" required />
+          <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-input-check v-model="object.alternativo" divClass="col-md-2 mt-3" label="Alternativo" />
         </div>
         <div class="row">
@@ -105,7 +105,7 @@ export default {
             this.object.status ? this.object.status = 1 : this.object.status = 0
             this.idExercicio = res.exercicio.id
             this.descricaoExercicio = res.exercicio.descricao
-            this.idUsuario = res.usuario.id
+            this.idAluno = res.usuario.id
             this.nomeAluno = res.usuario.nome
           })
           .catch((err) => {
@@ -123,19 +123,12 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = 1 : this.object.status = 0
+           this.object.status ? this.object.status = true : this.object.status = false
 
-          this.object.usuario.id = this.idAluno
-          this.object.usuario.nome = this.nomeAluno
-          this.object.idUsuario = this.idAluno
-
-          this.object.exercicio.id = this.idExercicio
-          this.object.exercicio.descricao = this.descricaoExercicio
           this.object.idExercicio = this.idExercicio
+          this.object.idAluno = this.idAluno
 
           const newObj = { ...this.object }
-
-          newObj.status ? newObj.status = true : newObj.status = false
 
           const result = await insert(this.route, newObj)
 
@@ -153,7 +146,7 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data[0]
             this.modalError.show()
           }
         }

@@ -95,13 +95,13 @@ export default {
           },
         ],
       },
-      {
-        code: 'myProfile',
-        title: 'Meu Perfil',
-        status: false,
-        icon: 'bi-person-fill',
-        children: [],
-      },
+      // {
+      //   code: 'myProfile',
+      //   title: 'Meu Perfil',
+      //   status: false,
+      //   icon: 'bi-person-fill',
+      //   children: [],
+      // },
     ],
   }),
 

@@ -102,7 +102,12 @@ export default {
         if (await validateForm(this.$refs.form)) {
           this.object.status ? this.object.status = true : this.object.status = false
 
-          const result = await insert(this.route, this.object)
+          const newObj = { ...this.object }
+          delete newObj.file
+
+          newObj.status ? newObj.status = true : newObj.status = false
+
+          const result = await insert(this.route, newObj)
 
           if (result.status) {
             if (result.status == 204 && result.status == 200) {
@@ -114,11 +119,12 @@ export default {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Usuário criado com sucesso !')
               this.object = {}
+              newObj = {}
             }
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
@@ -143,7 +149,7 @@ export default {
             this.$router.back()
           }
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data[0]
             this.modalError.show()
           }
         }
@@ -153,7 +159,7 @@ export default {
 
           if (result.status) {
             if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
+              this.modalBody = result.response.data.errors[0]
               this.modalError.show()
             }
 
@@ -165,7 +171,7 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data.errors
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }

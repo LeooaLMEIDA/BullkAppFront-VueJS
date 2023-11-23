@@ -6,8 +6,6 @@
         <div class="row">
           <s-input-text v-model="object.descricao" ref="descricao" maxlength="10" divClass="col-md-6" label="Descrição"
             required />
-          <!-- <s-input-text v-model="idAluno" ref="idAluno" divClass="col-md-2" label="Aluno" placeholder=""
-            required /> -->
           <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
             <template #default>
               <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
@@ -68,7 +66,7 @@ export default {
     title: null,
     route: 'avaliacao',
     idAluno: null,
-    nomeAluno: null,
+    nomeAluno: "",
 
   }),
 
@@ -85,7 +83,6 @@ export default {
             this.$router.push({ name: 'avaliacao' })
           })
       }
-
       else { this.modalMessage.show() }
     },
 
@@ -146,7 +143,7 @@ export default {
             this.$router.back()
           }
           else {
-            this.modalBody = result.response.data.errors
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
@@ -158,17 +155,15 @@ export default {
 
           if (result.status) {
             if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
+              this.modalBody = result.response.data[0]
               this.modalError.show()
             }
-
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.$router.back()
             }
           }
-
           else {
             this.modalBody = result.response.data
             this.modalError.show()
