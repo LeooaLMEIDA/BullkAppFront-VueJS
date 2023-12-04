@@ -41,18 +41,20 @@ export default defineComponent({
     },
 
     update() {
-      if (this.selectedFile) {
-        this.$refs.fileInput.value = null;
-
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(new File([this.selectedFile], this.selectedFile.name));
-        this.$refs.fileInput.files = dataTransfer.files;
-      }
+      this.$refs.fileInput.value = null;
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(new File([this.selectedFile], this.selectedFile.name));
+      this.$refs.fileInput.files = dataTransfer.files;
     },
 
     updateValue() {
-      validateFile(this.selectedFile, this.required, this, 'Este campo é obrigatório')
-      this.update()
+      if (this.selectedFile) {
+        validateFile(this.selectedFile, this.required, this, 'Este campo é obrigatório')
+        this.update()
+      }
+      else {
+        this.$refs.fileInput.value = null;
+      }
     },
   },
 

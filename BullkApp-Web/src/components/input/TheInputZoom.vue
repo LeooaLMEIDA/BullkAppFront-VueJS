@@ -72,7 +72,7 @@ export default defineComponent({
         this.minlength,
         `${this.label} deve ter no mínimo ${this.minlength} caracteres.`
       )
-
+      this.$emit('blur')
       this.update()
     },
 

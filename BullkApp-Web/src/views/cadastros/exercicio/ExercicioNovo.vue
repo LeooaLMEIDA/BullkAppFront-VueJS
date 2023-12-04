@@ -9,9 +9,8 @@
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-select v-model="object.grpMusculos" divClass="col-md-5" label="Grupo Muscular" :items="grupoMusculares"
             :clearable="false" required />
-          <!-- <s-input-text v-model="idAparelho" ref="idAparelho" maxlength="40" divClass="col-md-2" label="Aparelho"
-            placeholder="" required /> -->
-          <s-input-zoom v-model="idAparelho" ref="idAparelho" divClass="col-12 col-md-2" label="Aparelho" required>
+          <s-input-zoom v-model="idAparelho" @blur="loadDescription" ref="idAparelho" divClass="col-12 col-md-2"
+            label="Aparelho" required>
             <template #default>
               <Aparelho :zoom="true" @selectedItem="handleSelectedAparelho" />
             </template>
@@ -21,7 +20,7 @@
           <s-input-file :selectedFile="object.file" @fileSelected="handleSelectedFile" ref="image" divClass="col-md-12"
             label="Imagem" :acceptedTypes="['.gif']" :required="!object.id" />
           <s-input-textarea v-model="object.orientacao" ref="orientacao" divClass="col-12 col-md-12 col-xxl-12"
-            label="Orientação" />
+            label="Orientação" maxlength="140" />
         </div>
         <div class="row">
           <s-label-required />
@@ -118,34 +117,28 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = true : this.object.status = false
-
-          this.object.aparelho.id = this.idAparelho
-          this.object.aparelho.descricao = this.descricaoAparelho
           this.object.idAparelho = this.idAparelho
 
-          const newObj = { ...this.object }
-          delete newObj.file
-
-          newObj.status ? newObj.status = true : newObj.status = false
-
-          const result = await insert(this.route, newObj)
+          const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status == 204 && result.status == 200) {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
-              this.$router.back()
+            if (result.status != 204 && result.status != 200) {
+              this.modalBody = result.response.data[0]
+              this.modalError.show()
             }
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.object = {}
+              this.object.file = null
+              this.idAparelho = null
+              this.descricaoAparelho = null
+              this.object.imgIlustracao = null
             }
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
@@ -204,6 +197,21 @@ export default {
       else { this.modalNotLogged.show() }
     },
 
+    async loadDescription() {
+      await getById("aparelho", this.idAparelho)
+        .then((res) => {
+          this.descricaoAparelho = res.descricao
+        })
+        .catch((err) => {
+          
+          console.log(err.erros)
+          this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
+          this.modalError.show()
+        })
+
+      this.idAparelho
+    },
+
     handleSelectedAparelho(item) {
       this.$refs.idAparelho.modalZoom.hide()
       this.idAparelho = item.id.toString()
@@ -220,9 +228,8 @@ export default {
           const base64String = event.target.result.split(',')[1]
           this.object.imgIlustracao = base64String;
         }
+        reader.readAsDataURL(file);
       }
-
-      reader.readAsDataURL(file);
     }
   },
   mounted() {
@@ -233,25 +240,8 @@ export default {
 
   async created() {
     const id = this.$route.params.id
-
     if (id) { await this.loadItem(id) }
   },
-
-  watch: {
-    async idAparelho() {
-      await getById("aparelho", this.idAparelho)
-        .then((res) => {
-          this.descricaoAparelho = res.descricao
-        })
-        .catch((err) => {
-          console.log(err.erros)
-          this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
-          this.modalError.show()
-        })
-
-      this.idAparelho
-    }
-  }
 }
 </script>
   
