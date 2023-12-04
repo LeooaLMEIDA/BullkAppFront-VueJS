@@ -213,9 +213,22 @@ export default {
       }
     },
 
-    handleSelectedAparelho(item) {
+    async handleSelectedAparelho(item) {
       this.$refs.idAparelho.modalZoom.hide()
       this.idAparelho = item.id.toString()
+      if (this.idAparelho) {
+        await getById("aparelho", this.idAparelho)
+          .then((res) => {
+            this.descricaoAparelho = res.descricao
+          })
+          .catch((err) => {
+
+            console.log(err.erros)
+            this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAparelho
+      }
     },
 
     logout() { logout(this) },

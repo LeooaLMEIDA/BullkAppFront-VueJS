@@ -4,8 +4,8 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" v-mask="'##/##/####'" ref="descricao" maxlength="10" divClass="col-md-4" label="Descrição"
-            required />
+          <s-input-text v-model="object.descricao" v-mask="'##/##/####'" ref="descricao" maxlength="10"
+            divClass="col-md-4" label="Descrição" required />
           <s-input-zoom v-model="idAluno" @blur="loadDescription" ref="idAluno" divClass="col-12 col-md-2" label="Aluno"
             required>
             <template #default>
@@ -200,9 +200,21 @@ export default {
       reader.readAsDataURL(file);
     },
 
-    handleSelectedAluno(item) {
+    async handleSelectedAluno(item) {
       this.$refs.idAluno.modalZoom.hide()
       this.idAluno = item.id.toString()
+      if (this.idAluno) {
+        await getById("usuario", this.idAluno)
+          .then((res) => {
+            this.nomeAluno = res.nome
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAluno
+      }
     },
   },
 

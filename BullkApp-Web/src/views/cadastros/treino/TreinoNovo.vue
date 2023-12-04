@@ -242,14 +242,39 @@ export default {
       }
     },
 
-    handleSelectedExercicio(item) {
+    async handleSelectedExercicio(item) {
       this.$refs.idExercicio.modalZoom.hide()
       this.idExercicio = item.id.toString()
+      if (this.idExercicio) {
+        await getById("exercicio", this.idExercicio)
+          .then((res) => {
+            this.descricaoExercicio = res.descricao
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Exercício ${this.idExercicio} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAparelho
+      }
     },
 
-    handleSelectedAluno(item) {
+    async handleSelectedAluno(item) {
       this.$refs.idAluno.modalZoom.hide()
       this.idAluno = item.id.toString()
+      if (this.idAluno) {
+        await getById("usuario", this.idAluno)
+          .then((res) => {
+            this.nomeAluno = res.nome
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+            this.modalError.show()
+          })
+
+        this.idAluno
+      }
     },
 
     logout() { logout(this) }
