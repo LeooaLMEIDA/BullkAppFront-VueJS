@@ -78,12 +78,8 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-          this.object.status ? this.object.status = true : this.object.status = false
 
-          const newObj = { ...this.object }
-          newObj.status ? newObj.status = true : newObj.status = false
-
-          const result = await insert(this.route, newObj)
+          const result = await insert(this.route, this.object)
 
           if (result.status) {
             if (result.status != 204 && result.status != 200) {
@@ -109,10 +105,7 @@ export default {
     async save() {
       if (await this.$checkSession()) {
         if (this.object.id) {
-          const newObj = { ...this.object }
-          newObj.status ? newObj.status = true : newObj.status = false
-
-          const result = await update(this.route, newObj)
+          const result = await update(this.route, this.object)
 
           if (result.status && (result.status == 204 || result.status == 200)) {
             this.$store.dispatch('setShowToast', true)

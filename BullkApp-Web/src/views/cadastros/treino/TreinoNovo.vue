@@ -4,14 +4,16 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-zoom v-model="idExercicio" ref="idExercicio" divClass="col-12 col-md-2" label="Exercício" required>
+          <s-input-zoom v-model="idExercicio" @blur="loadDescriptionExercicio" ref="idExercicio"
+            divClass="col-12 col-md-2" label="Exercício" required>
             <template #default>
               <Exercicio :zoom="true" @selectedItem="handleSelectedExercicio" />
             </template>
           </s-input-zoom>
           <s-input-text v-model="descricaoExercicio" ref="descricaoExercicio" maxlength="40" divClass="col-md-4"
             isDisabled label="Descrição Exercício" placeholder="" />
-          <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
+          <s-input-zoom v-model="idAluno" @blur="loadDescriptionAluno" ref="idAluno" divClass="col-12 col-md-2"
+            label="Aluno" required>
             <template #default>
               <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
             </template>
@@ -26,7 +28,7 @@
           <s-input-text v-model="object.peso" ref="peso" maxlength="4" divClass="col-md-1" label="Peso" placeholder=""
             required />
           <s-input-text v-model="object.descanso" ref="intervalo" v-mask="'##:##:##'" divClass="col-md-2"
-            label="Intervalo" placeholder="00:00:30" required />
+            label="Intervalo" minlength="8" placeholder="00:00:30" required />
           <s-select v-model="object.status" divClass="col-md-2" label="Status" :items="status" :clearable="false" />
           <s-input-check v-model="object.alternativo" divClass="col-md-2 mt-3" label="Alternativo" />
         </div>
@@ -123,30 +125,30 @@ export default {
     async saveAndKeep() {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
-           this.object.status ? this.object.status = true : this.object.status = false
-
           this.object.idExercicio = this.idExercicio
-          this.object.idAluno = this.idAluno
+          this.object.idUsuario = this.idAluno
 
-          const newObj = { ...this.object }
-
-          const result = await insert(this.route, newObj)
+          const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status == 204 && result.status == 200) {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Treino alterado com sucesso !')
-              this.$router.back()
+            if (result.status != 204 && result.status != 200) {
+              this.modalBody = result.response.data[0]
+              this.modalError.show()
             }
+
             else {
               this.$store.dispatch('setShowToast', true)
               this.$store.dispatch('setToastMessage', 'Treino criado com sucesso !')
               this.object = {}
+              this.idAluno = null
+              this.nomeAluno = null
+              this.idExercicio = null
+              this.descricaoExercicio = null
             }
           }
 
           else {
-            this.modalBody = result.response.data[0]
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
@@ -188,7 +190,7 @@ export default {
 
           if (result.status) {
             if (result.status != 204 && result.status != 200) {
-              this.modalBody = result.response.data
+              this.modalBody = result.response.data[0]
               this.modalError.show()
             }
 
@@ -200,13 +202,44 @@ export default {
           }
 
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
       }
 
       else { this.modalNotLogged.show() }
+    },
+
+    async loadDescriptionExercicio() {
+      if (this.idExercicio) {
+        await getById("exercicio", this.idExercicio)
+          .then((res) => {
+            this.descricaoExercicio = res.descricao
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Exercício ${this.idExercicio} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAparelho
+      }
+    },
+
+    async loadDescriptionAluno() {
+      if (this.idAluno) {
+        await getById("usuario", this.idAluno)
+          .then((res) => {
+            this.nomeAluno = res.nome
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+            this.modalError.show()
+          })
+
+        this.idAluno
+      }
     },
 
     handleSelectedExercicio(item) {
@@ -232,35 +265,6 @@ export default {
     const id = this.$route.params.id
     if (id) { await this.loadItem(id) }
   },
-
-  watch: {
-    async idExercicio() {
-      await getById("exercicio", this.idExercicio)
-        .then((res) => {
-          this.descricaoExercicio = res.descricao
-        })
-        .catch((err) => {
-          console.log(err.erros)
-          this.modalBody = `Exercício ${this.idExercicio} não foi encontrado`
-          this.modalError.show()
-        })
-
-      this.idAparelho
-    },
-    async idAluno() {
-      await getById("usuario", this.idAluno)
-        .then((res) => {
-          this.nomeAluno = res.nome
-        })
-        .catch((err) => {
-          console.log(err.erros)
-          this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
-          this.modalError.show()
-        })
-
-      this.idAluno
-    }
-  }
 
 }
 </script>

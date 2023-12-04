@@ -4,14 +4,15 @@
     <div class="card card-body mx-2">
       <form ref="form" @submit.prevent="submitForm">
         <div class="row">
-          <s-input-text v-model="object.descricao" ref="descricao" maxlength="10" divClass="col-md-6" label="Descrição"
+          <s-input-text v-model="object.descricao" v-mask="'##/##/####'" ref="descricao" maxlength="10" divClass="col-md-4" label="Descrição"
             required />
-          <s-input-zoom v-model="idAluno" ref="idAluno" divClass="col-12 col-md-2" label="Aluno" required>
+          <s-input-zoom v-model="idAluno" @blur="loadDescription" ref="idAluno" divClass="col-12 col-md-2" label="Aluno"
+            required>
             <template #default>
               <Usuario :zoom="true" @selectedItem="handleSelectedAluno" />
             </template>
           </s-input-zoom>
-          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-4" isDisabled
+          <s-input-text v-model="nomeAluno" ref="nomeAluno" maxlength="40" divClass="col-md-6" isDisabled
             label="Nome Aluno" placeholder="" />
           <s-input-textarea v-model="object.observacao" ref="descricao" divClass="col-md-12" label="Observação"
             placeholder="" />
@@ -94,30 +95,24 @@ export default {
       if (await this.$checkSession()) {
         if (await validateForm(this.$refs.form)) {
 
-          this.object.usuario.id = this.idAluno
-          this.object.usuario.nome = this.nomeAluno
           this.object.idUsuario = this.idAluno
 
-          const newObj = { ...this.object }
-          delete newObj.file
-
-          const result = await insert(this.route, newObj)
+          const result = await insert(this.route, this.object)
 
           if (result.status) {
-            if (result.status == 204 && result.status == 200) {
-              this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação alterada com sucesso !')
-              this.$router.back()
+            if (result.status != 204 && result.status != 200) {
+              this.modalBody = result.response.errors[0]
+              this.modalError.show()
             }
             else {
               this.$store.dispatch('setShowToast', true)
-              this.$store.dispatch('setToastMessage', 'Avaliação criado com sucesso !')
+              this.$store.dispatch('setToastMessage', 'Avaliação criada com sucesso !')
               this.object = {}
+              this.idAluno = null
             }
           }
-
           else {
-            this.modalBody = result.response.data
+            this.modalBody = result.response.data.errors[0]
             this.modalError.show()
           }
         }
@@ -176,6 +171,21 @@ export default {
 
     logout() { logout(this) },
 
+    async loadDescription() {
+      if (this.idAluno) {
+        await getById("usuario", this.idAluno)
+          .then((res) => {
+            this.nomeAluno = res.nome
+          })
+          .catch((err) => {
+            console.log(err.erros)
+            this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAluno
+      }
+    },
+
     handleSelectedFile(file) {
       this.object.file = file;
       const reader = new FileReader();
@@ -207,23 +217,6 @@ export default {
 
     if (id) { await this.loadItem(id) }
   },
-
-  watch: {
-    async idAluno() {
-      await getById("usuario", this.idAluno)
-        .then((res) => {
-          this.nomeAluno = res.nome
-        })
-        .catch((err) => {
-          console.log(err.erros)
-          this.modalBody = `Usuário ${this.idAluno} não foi encontrado`
-          this.modalError.show()
-        })
-
-      this.idAluno
-    }
-  }
-
 }
 </script>
   

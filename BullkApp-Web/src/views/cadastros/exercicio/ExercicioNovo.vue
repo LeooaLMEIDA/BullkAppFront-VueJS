@@ -198,18 +198,19 @@ export default {
     },
 
     async loadDescription() {
-      await getById("aparelho", this.idAparelho)
-        .then((res) => {
-          this.descricaoAparelho = res.descricao
-        })
-        .catch((err) => {
-          
-          console.log(err.erros)
-          this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
-          this.modalError.show()
-        })
+      if (this.idAparelho) {
+        await getById("aparelho", this.idAparelho)
+          .then((res) => {
+            this.descricaoAparelho = res.descricao
+          })
+          .catch((err) => {
 
-      this.idAparelho
+            console.log(err.erros)
+            this.modalBody = `Aparelho ${this.idAparelho} não foi encontrado`
+            this.modalError.show()
+          })
+        this.idAparelho
+      }
     },
 
     handleSelectedAparelho(item) {

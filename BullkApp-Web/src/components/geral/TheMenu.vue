@@ -66,7 +66,7 @@ export default {
           },
           {
             code: "treino",
-            title: "Treino",
+            title: "Treinos",
             status: false,
             icon: "bi bi-circle",
             children: [],
